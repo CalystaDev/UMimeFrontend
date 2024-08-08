@@ -1,1 +1,28 @@
-<p>home works!</p>
+<div class="container">
+    <main>
+      <button class="icon-container">
+          <mat-icon>person_outline</mat-icon>
+      </button>
+      <div class="hero">
+        <h1>
+          <span class="orange-text"> you </span> mime. <span class="orange-text"> i </span> mime.
+        </h1>
+      </div>
+      <div class="input-container-topic">
+        <input type="text" placeholder="What would you like to mime about?" class="rounded-input"/>
+        <button class="search-button">
+          <img src="assets/search-icon.png" class="search-icon"/>
+        </button>
+      </div>
+      <p class="note">Note: Our service will perform better with more context.</p>
+    </main>
+    <div class="right-section">
+      <div class="divider"></div>
+      <div class="past-mimes">
+        <h2>past mimes:</h2>
+        <app-mime-card title="Intro to Assembly: LC-3" host="Kamala Harris"></app-mime-card>
+        <app-mime-card title="Global IT Outage 2024 from Crowdstrike" host="Snoop Dogg"></app-mime-card>
+        <app-mime-new />
+      </div>
+    </div>
+  </div>

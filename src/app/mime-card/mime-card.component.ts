@@ -4,12 +4,7 @@ import { Component, Input } from '@angular/core';
   selector: 'app-mime-card',
   standalone: true,
   imports: [],
-  template: `
-    <div class="mime-card">
-      <h3>{{ title }}</h3>
-      <p>Hosts: <b>{{ host }}</b></p>
-    </div>
-  `,
+  templateUrl:'./mime-card.component.html',
   styleUrl: './mime-card.component.css'
 })
 export class MimeCardComponent {
