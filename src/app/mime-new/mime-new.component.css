@@ -1,0 +1,45 @@
+/* mime-button.component.css */
+.mime-button {
+    background-color: #5b3c19;
+    color: #fff;
+    border: none;
+    border-radius: 19px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: block;
+    width: 100%;
+    box-shadow: #FDF8F7 0px 0px 10px;
+    font-family: 'Inter Regular';
+    font-weight: 200;
+    padding: 2% 5% 5% 0%;
+    border-radius: 19px;
+    margin-bottom: 5%;
+    box-shadow: #FDF8F7 0px 0px 10px;
+    align-items: center;
+    transition: background-color 0.5s ease-in-out; 
+}
+
+.mime-button:hover {
+    background-color: #90591b; 
+}
+
+h2 {
+    color: #eeecec;
+    font-size: 1.1rem;
+    font-family: 'Inter Regular';
+    font-weight: 200;
+    margin-top: 0%;
+    margin-bottom: -0.5%;
+}
+
+mat-icon {
+    color: #FF8A00;
+    font-size: 3.25rem;
+    width: 3.25rem; 
+    height: 3.25rem; 
+    transition: color 0.5s ease-in-out;
+}
+
+mat-icon:hover {
+    color: white;
+}

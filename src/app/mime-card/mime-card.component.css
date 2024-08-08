@@ -1,0 +1,25 @@
+.mime-card {
+    background-color: #000;
+    color: #fff;
+    padding: 10% 5% 5% 5%;
+    border-radius: 19px;
+    margin-bottom: 5%;
+    box-shadow: #FDF8F7 0px 0px 10px;
+}
+
+.mime-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-family: 'Inter Regular';
+    font-weight: 200;
+    padding-bottom: 4%;
+}
+
+.mime-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #FFF;
+    font-family: 'Inter Regular';
+    font-style: italic;
+    font-weight: 200;
+}

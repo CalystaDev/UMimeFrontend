@@ -1,0 +1,169 @@
+/* home.component.css */
+html, body {
+    margin:0;
+    padding: 0;
+    background-color: #FDF8F7;
+    width:100%;
+    height: 100%;
+}
+
+.container {
+    display: flex;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+main {
+    flex-grow:1.2;
+    padding-left: 4%;
+    position: relative;
+}
+
+.icon-container {
+    position: absolute;
+    top: 2%; /* Adjust as needed */
+    right: 1.2%; /* Adjust as needed */
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+mat-icon {
+    width: 2.2rem;
+    height:2.2rem;
+    font-size: 2.2rem;
+    transition: color 0.5s ease-in-out;
+}
+
+mat-icon:hover {
+    color:#995A10;
+}
+
+.hero {
+    padding-top: 10%;
+    padding-left: 0.25%;
+}
+
+h1 {
+    font-family: 'Readex Pro Bold';
+    font-weight: bolder;
+    font-size: 3.75rem;
+}
+
+.orange-text {
+    color: #FFA800;
+}
+
+.input-container-topic {
+    margin-top: -3%;
+    align-items: center;
+    display: flex;
+    width: 100%;
+    margin-right: 20%;
+}
+
+.rounded-input {
+    width: 70%;
+    padding: 1.5%;
+    border-radius: 52px;
+    border: 4px solid #995A10;
+    font-family: 'Readex Pro Normal';
+    font-size: 16px;
+    color: #000;
+    background-color: #C9C8C8;
+    padding-right: 2%;
+    transition: background-color 0.5s ease-in-out; 
+}
+
+.rounded-input:focus, .rounded-input:hover {
+    background-color: #fff; 
+}
+
+.search-button {
+    background-color: transparent;
+    border: none;
+    margin-left: -5%;
+    cursor: pointer;
+}
+
+.search-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    align-content: end;
+}
+
+.note {
+    font-family: 'Inter Regular';
+    color: #858585;
+    font-style: italic;
+    font-size: 0.85rem;
+    padding-left: 1.5%;
+}
+
+.right-section {
+    flex:1;
+    background-color: #FFBA68;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.divider {
+    height: 100%;
+    width: 0.25rem;
+    background-color: #995A10;
+}
+
+.past-mimes {
+    width: 100%;
+    padding: 5%;
+    padding-top: 10%;
+}
+
+.past-mimes h2 {
+    font-family: 'Readex Pro Bold';
+    font-size: 1.75rem;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+.mime-card {
+    background-color: #000;
+    color: #fff;
+    padding: 10% 5% 5% 5%;
+    border-radius: 19px;
+    margin-bottom: 5%;
+    box-shadow: #FDF8F7 0px 0px 10px;
+}
+
+.mime-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-family: 'Inter Regular';
+    font-weight: 200;
+    padding-bottom: 4%;
+}
+
+.mime-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #FFF;
+    font-family: 'Inter Regular';
+    font-style: italic;
+    font-weight: 200;
+}
+
+.new-mime-button {
+    background-color: #995A10;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+b {
+    font-weight: 500;
+}
