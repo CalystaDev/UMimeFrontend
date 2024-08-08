@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MimeCardComponent } from './mime-card.component';
 
 describe('MimeCardComponent', () => {

@@ -20,8 +20,8 @@
       <div class="divider"></div>
       <div class="past-mimes">
         <h2>past mimes:</h2>
-        <app-mime-card title="Intro to Assembly: LC-3" host="Kamala Harris"></app-mime-card>
-        <app-mime-card title="Global IT Outage 2024 from Crowdstrike" host="Snoop Dogg"></app-mime-card>
+        <app-mime-card *ngFor="let mime of mimes" [topic]="mime.topic" [host]="mime.host"></app-mime-card>
+     
         <app-mime-new />
       </div>
     </div>
