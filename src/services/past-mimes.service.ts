@@ -11,12 +11,12 @@ export interface Mime {
 export class PastMimesService {
   private mimes: Mime[] = [
     {
-      topic: 'Project 1',
-      host: 'This is the description for Project 1'
+      topic: 'Intro to Assembly: LC-3',
+      host: 'Kamala Harris'
     },
     {
-      topic: 'Project 2',
-      host: 'This is the description for Project 2'
+      topic: 'Global IT Outage 2024 from Crowdstrike',
+      host: 'Snoop Dogg'
     },
     // Add more projects as needed
   ];
