@@ -9,12 +9,26 @@
         </h1>
       </div>
       <div class="input-container-topic">
-        <input type="text" placeholder="What would you like to mime about?" class="rounded-input"/>
+        <input type="text" placeholder="What would you like to mime about?" class="rounded-input" [(ngModel)]="mimePrompt"/>
         <button class="search-button">
           <img src="assets/search-icon.png" class="search-icon"/>
         </button>
       </div>
-      <p class="note">Note: Our service will perform better with more context.</p>
+      <p id="footnote"> Note: Our service will perform better with more context. </p>
+      <div class="host-select" *ngIf="mimePrompt">
+        <div class="subtitle-with-logo">
+          <img src="assets/mic.png" class="mic-icon">
+          <h2> choose your host</h2>
+        </div>
+        <p id="info"> Want to see our mime hosts?  Check out our host directory here! </p>
+        <div class="input-container-host">
+          <select id="input-host" [(ngModel)]="selectedHost">
+            <option value="" disabled selected>select your narrator</option>
+            <option *ngFor="let host of hosts" [value]="host"> {{ host }}</option>
+          </select>
+          <button (click)="onLetsMimeClick()"> let's mime </button>
+        </div>
+      </div>
     </main>
     <div class="right-section">
       <div class="divider"></div>
