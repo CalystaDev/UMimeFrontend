@@ -5,6 +5,7 @@ import { MimeNewComponent } from '../mime-new/mime-new.component';
 import { MatIconModule } from '@angular/material/icon';
 import { Mime, PastMimesService } from '../../services/past-mimes.service';
 import { FormsModule } from '@angular/forms';
+import { HostsService, Host } from '../../services/hosts.service';
 
 @Component({
   selector: 'app-home',
@@ -15,15 +16,17 @@ import { FormsModule } from '@angular/forms';
 })
 export class HomeComponent implements OnInit { 
   mimes: Mime[] = [];
+  hosts: Host[] = [];
   mimePrompt: string = ' '
   selectedHost: string = ''
 
-  hosts: string[] = ['Host 1', 'Host 2', 'Host 3', 'Host 4'];
+  // hosts: string[] = ['Host 1', 'Host 2', 'Host 3', 'Host 4'];
 
-  constructor(private mimeService: PastMimesService) {}
+  constructor(private mimeService: PastMimesService, private hostsService: HostsService,) {}
 
   ngOnInit() {
     this.mimes = this.mimeService.getMimes();
+    this.hosts = this.hostsService.getHosts();
   }
 
   onLetsMimeClick() {
