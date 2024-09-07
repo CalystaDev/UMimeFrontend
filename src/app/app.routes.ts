@@ -1,8 +1,16 @@
-import {Routes} from '@angular/router';
-import {HomeComponent} from './home/home.component';
+import { Routes } from '@angular/router';
+import { authGuard } from './auth.guard';
+
 export const routes: Routes = [
   {
-    path: '',
-    component: HomeComponent,
+    path: 'login',
+    loadComponent: () => import('./screens/login/login.component').then(m => m.LoginComponent)
   },
+  {
+    path: 'home',
+    loadComponent: () => import('./home/home.component').then(m => m.HomeComponent),
+    canActivate: [authGuard]
+  },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '**', redirectTo: '/home' } // Catch-all route for undefined routes
 ];

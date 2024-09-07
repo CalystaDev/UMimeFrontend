@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MimeCardComponent } from '../mime-card/mime-card.component';
 import { MimeNewComponent } from '../mime-new/mime-new.component';
@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Mime, PastMimesService } from '../../services/past-mimes.service';
 import { FormsModule } from '@angular/forms';
 import { HostsService, Host } from '../../services/hosts.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -38,5 +39,13 @@ export class HomeComponent implements OnInit {
     } else {
       alert('Please select a host before proceeding.');
     }
+  }
+  openProfileDialog() {
+    alert("Open Profile Dialog");
+  }
+  private authService = inject(AuthService);
+
+  signOut() {
+    this.authService.signOut();
   }
 }
