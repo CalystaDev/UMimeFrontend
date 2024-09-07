@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit {
   }
 
   onLetsMimeClick() {
+    
     console.log('Selected Host:', this.selectedHost);
     
     if (this.selectedHost) {
