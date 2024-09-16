@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { MimeCardComponent } from '../mime-card/mime-card.component';
 import { MimeNewComponent } from '../mime-new/mime-new.component';
 import { MatIconModule } from '@angular/material/icon';
-import { Mime, PastMimesService } from '../../services/past-mimes.service';
+import {  PastMimesService } from '../../services/past-mimes.service';
 import { FormsModule } from '@angular/forms';
+import { Mime } from '../../services/mimes.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +22,8 @@ export class HomeComponent implements OnInit {
 
   hosts: string[] = ['Host 1', 'Host 2', 'Host 3', 'Host 4'];
 
-  constructor(private mimeService: PastMimesService) {}
+  constructor(private mimeService: PastMimesService, private authService: AuthService // Inject AuthService
+  ) {}
 
   ngOnInit() {
     this.mimes = this.mimeService.getMimes();
@@ -34,5 +37,14 @@ export class HomeComponent implements OnInit {
     } else {
       alert('Please select a host before proceeding.');
     }
+  }
+  onPersonClick() {
+    this.authService.googleSignIn().then(() => {
+      console.log('Google Sign-in successful');
+      // You can add additional logic here, such as navigating to a different page
+    }).catch(error => {
+      console.error('Google Sign-in failed', error);
+      // Handle sign-in errors here
+    });
   }
 }

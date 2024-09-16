@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Mime } from './mimes.model';
 
-export interface Mime {
-  topic: string;
-  host: string;
-}
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,12 +9,15 @@ export interface Mime {
 export class PastMimesService {
   private mimes: Mime[] = [
     {
-      topic: 'Intro to Assembly: LC-3',
-      host: 'Kamala Harris'
-    },
-    {
-      topic: 'Global IT Outage 2024 from Crowdstrike',
-      host: 'Snoop Dogg'
+    createdAt: new Date(2018,  3,  14),
+    title: "How to make mac n cheese",
+    duration: 15,
+    hID: "someURL",
+    rating: 5,
+    script:"someScrupt", 
+    status: "someStatus",
+    videoUrl: "someUrl"
+
     },
     // Add more projects as needed
   ];
@@ -27,3 +28,4 @@ export class PastMimesService {
     return this.mimes;
   }
 }
+

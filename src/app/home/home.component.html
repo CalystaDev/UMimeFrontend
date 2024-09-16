@@ -1,7 +1,7 @@
 <div class="container">
     <main>
       <button class="icon-container">
-          <mat-icon>person_outline</mat-icon>
+          <mat-icon (click)="onPersonClick()">person_outline</mat-icon>
       </button>
       <div class="hero">
         <h1>
@@ -34,7 +34,7 @@
       <div class="divider"></div>
       <div class="past-mimes">
         <h2>past mimes:</h2>
-        <app-mime-card *ngFor="let mime of mimes" [topic]="mime.topic" [host]="mime.host"></app-mime-card>
+        <app-mime-card *ngFor="let mime of mimes" [title]="mime.title" [host]="mime.hID"></app-mime-card>
      
         <app-mime-new />
       </div>
