@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MimeCardComponent } from '../mime-card/mime-card.component';
-import { MimeNewComponent } from '../mime-new/mime-new.component';
+import { MimeCardComponent } from '../../mime-card/mime-card.component';
+import { MimeNewComponent } from '../../mime-new/mime-new.component';
 import { MatIconModule } from '@angular/material/icon';
-import {  PastMimesService } from '../../services/past-mimes.service';
+import { PastMimesService } from '../../../services/past-mimes.service';
 import { FormsModule } from '@angular/forms';
-import { Mime } from '../../services/mimes.model';
-import { AuthService } from '../../services/auth.service';
+import { Mime } from '../../../services/mimes.model';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -15,7 +15,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit { 
+export class HomeComponent implements OnInit {
   mimes: Mime[] = [];
   mimePrompt: string = ' '
   selectedHost: string = ''
@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
   hosts: string[] = ['Host 1', 'Host 2', 'Host 3', 'Host 4'];
 
   constructor(private mimeService: PastMimesService, private authService: AuthService // Inject AuthService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.mimes = this.mimeService.getMimes();
@@ -31,7 +31,7 @@ export class HomeComponent implements OnInit {
 
   onLetsMimeClick() {
     console.log('Selected Host:', this.selectedHost);
-    
+
     if (this.selectedHost) {
       alert(`Let's mime with ${this.selectedHost}!`);
     } else {
