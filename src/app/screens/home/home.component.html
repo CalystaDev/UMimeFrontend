@@ -1,8 +1,15 @@
 <div class="container">
     <main>
-      <button class="icon-container">
+      <ng-container *ngIf="(user$ | async) as user; else signInButton">
+        <button class="icon-container">
+          <img [src]="user.photoURL" alt="Profile" (click)="signOut()" style="width: 24px; height: 24px;">
+        </button>
+      </ng-container>
+      <ng-template #signInButton>
+        <button class="icon-container">
           <mat-icon (click)="onPersonClick()">person_outline</mat-icon>
-      </button>
+        </button>
+      </ng-template>
       <div class="hero">
         <h1>
           <span class="orange-text"> you </span> mime. <span class="orange-text"> i </span> mime.
