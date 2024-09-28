@@ -2,7 +2,7 @@
     <main>
       <ng-container *ngIf="(user$ | async) as user; else signInButton">
         <button class="icon-container">
-          <img [src]="user.photoURL" alt="Profile" (click)="signOut()" style="width: 24px; height: 24px;">
+          <img [src]="user.photoURL" alt="Profile" (click)="signOut()">
         </button>
       </ng-container>
       <ng-template #signInButton>
