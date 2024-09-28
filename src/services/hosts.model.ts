@@ -4,6 +4,6 @@ export interface Hosts {
     decription: string;
     displayName: string;
     profilePictureURL: string;
-    tags: number[];
+    tags: string[];
     wpm: number;
 }
