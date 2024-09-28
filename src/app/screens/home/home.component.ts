@@ -48,4 +48,8 @@ export class HomeComponent implements OnInit {
       // Handle sign-in errors here
     });
   }
+
+  onHostDirectoryClick() {
+    this.router.navigate(['/host-directory']);
+  }
 }

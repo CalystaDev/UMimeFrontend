@@ -271,3 +271,11 @@ h2 {
     transform: scale(1.05);
     transition: background-color 0.3s ease-in-out, transform 0.2s ease;
 }
+
+
+#host_directory {
+
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: bold;
+}

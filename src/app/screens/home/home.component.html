@@ -20,7 +20,8 @@
           <img src="assets/mic.png" class="mic-icon">
           <h2> choose your host</h2>
         </div>
-        <p id="info"> Want to see our mime hosts?  Check out our host directory here! </p>
+        <p id="info"> Want to see our mime hosts?  Check out our
+          <a (click)="onHostDirectoryClick()" id="host_directory"> host directory </a>  here! </p>
         <div class="input-container-host">
           <select id="input-host" [(ngModel)]="selectedHost">
             <option value="" disabled selected>select your narrator</option>
