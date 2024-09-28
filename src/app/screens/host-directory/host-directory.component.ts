@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { HostCardComponent } from './host-card/host-card.component';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { HostService } from '../../../services/hosts.model';
+import { Observable } from 'rxjs';
+import { Host } from '../../../services/hosts.model';
 
 
 @Component({
@@ -12,8 +15,14 @@ import { Router } from '@angular/router';
   templateUrl: './host-directory.component.html',
   styleUrl: './host-directory.component.css'
 })
-export class HostDirectoryComponent {
-  constructor(private router: Router) {}
+export class HostDirectoryComponent implements OnInit{
+  hosts$: Observable<Host[]> | undefined;
+
+  constructor(private router: Router, private hostService: HostService) {}
+
+  ngOnInit() {
+    this.hosts$ = this.hostService.getHosts();
+  }
 
   onPersonClick() {
     console.log('Person clicked');
@@ -24,38 +33,38 @@ export class HostDirectoryComponent {
     this.router.navigate(['/']);
   }
 
-  hosts = [
-    {
-      hostPhotoURL: 'assets/mua_test.png',
-      hostDisplayName: 'MUA #1',
-      uses: 37000,
-      tags: ['soft', 'cali girl vibes']
-    },
-    {
-      hostPhotoURL: 'assets/sports.png',
-      hostDisplayName: 'Sports #1',
-      uses: 10000,
-      tags: ['deep', 'fatherly', 'italian accent']
-    },
-    {
-      hostPhotoURL: 'assets/rapper.png',
-      hostDisplayName: 'Rapper #1',
-      uses: 75000,
-      tags: ['mumbler', 'side commentaries']
-    },
-    {
-      hostPhotoURL: 'assets/chef.png',
-      hostDisplayName: 'Master Chef #1',
-      uses: 62000,
-      tags: ['coach vibes', 'scary', 'judgy']
-    },
-    {
-      hostPhotoURL: 'assets/teacher.png',
-      hostDisplayName: 'Teacher #1',
-      uses: 50000,
-      tags: ['strict', 'wise', 'loves the kids']
-    }
-  ];
+  // hosts = [
+  //   {
+  //     hostPhotoURL: 'assets/mua_test.png',
+  //     hostDisplayName: 'MUA #1',
+  //     uses: 37000,
+  //     tags: ['soft', 'cali girl vibes']
+  //   },
+  //   {
+  //     hostPhotoURL: 'assets/sports.png',
+  //     hostDisplayName: 'Sports #1',
+  //     uses: 10000,
+  //     tags: ['deep', 'fatherly', 'italian accent']
+  //   },
+  //   {
+  //     hostPhotoURL: 'assets/rapper.png',
+  //     hostDisplayName: 'Rapper #1',
+  //     uses: 75000,
+  //     tags: ['mumbler', 'side commentaries']
+  //   },
+  //   {
+  //     hostPhotoURL: 'assets/chef.png',
+  //     hostDisplayName: 'Master Chef #1',
+  //     uses: 62000,
+  //     tags: ['coach vibes', 'scary', 'judgy']
+  //   },
+  //   {
+  //     hostPhotoURL: 'assets/teacher.png',
+  //     hostDisplayName: 'Teacher #1',
+  //     uses: 50000,
+  //     tags: ['strict', 'wise', 'loves the kids']
+  //   }
+  // ];
 
 
 }
