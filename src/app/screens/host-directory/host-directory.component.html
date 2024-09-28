@@ -1,0 +1,26 @@
+<div class="container">
+    <header>
+        <button class="icon-container">
+            <mat-icon (click)="onHomeClick()">home</mat-icon>
+        </button>
+        <button class="icon-container">
+          <mat-icon (click)="onPersonClick()">person_outline</mat-icon>
+      </button>
+    </header>
+    <main>
+        <h1>host directory</h1>
+        <h3>check out who we have on line!</h3>
+        
+        <div class="hosts-list">
+            <ng-container *ngFor="let host of hosts">
+                <app-host-card 
+                  [hostPhotoURL]="host.hostPhotoURL" 
+                  [hostDisplayName]="host.hostDisplayName" 
+                  [uses]="host.uses" 
+                  [tags]="host.tags">
+                </app-host-card>
+            </ng-container>
+        </div>
+        
+    </main>
+</div>

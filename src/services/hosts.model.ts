@@ -6,4 +6,5 @@ export interface Hosts {
     profilePictureURL: string;
     tags: string[];
     wpm: number;
+    uses: number;
 }
