@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { PastMimesService, Mime } from '../../services/past-mimes.service';
+import { PastMimesService } from '../../services/past-mimes.service';
+import { Mime } from '../../services/mimes.model';
 
 @Component({
   selector: 'app-mime-card',
@@ -9,7 +10,7 @@ import { PastMimesService, Mime } from '../../services/past-mimes.service';
   styleUrl: './mime-card.component.css'
 })
 export class MimeCardComponent {
-  @Input() topic!: string;
+  @Input() title!: string;
   @Input() host!: string;
 
   constructor(private mimeService: PastMimesService) {}
