@@ -4,6 +4,7 @@ export interface Mime {
     duration: number;
     hID: string;
     rating: number;
+    prompt: string;
     script: string;
     status?: string;
     videoUrl?: string;

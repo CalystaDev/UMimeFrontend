@@ -2,8 +2,9 @@ import { Mime } from "./mimes.model";
 
 export interface User {
     createdAt: Date;
-    displayName?: string;
+    description: string;
     email: string;
     lastSignedIn?: Date;
     mimes?: Mime[];
+    profilePictureURL: string;
 }
