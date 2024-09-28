@@ -1,0 +1,174 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    justify-content: flex-start;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;  
+    width: 95%;  /* Ensure it stretches across the page */
+    margin-left: 2%; 
+    margin-bottom: -2%;
+    margin-top:1%;
+}
+
+
+main {
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-top:-2%;
+}
+
+h1 {
+    font-family: 'Readex Pro Bold';
+    font-weight: bolder;
+    font-size: 3.5rem;
+    text-align: left;
+    color: #FF8A00;
+    text-wrap: wrap;
+    margin-bottom: -1%;
+}
+
+h3 {
+    font-family: 'Readex Pro Normal';
+    font-size: 1.5rem;
+    font-weight: lighter;
+    letter-spacing: 0.2cap;
+}
+
+video {
+    width: 100%;
+    height: auto;
+    padding-top: 2%;
+}
+
+.feedback {
+    display: flex;
+    flex-direction: row;
+    margin-top: 5%;
+    padding-bottom: 5%;
+
+}
+
+input {
+    font-family: 'Inter Regular';
+    font-size: 1rem;
+    padding: 1%;
+    padding-left: 2%;
+    width: 80%;
+    border: 3px solid #858585;
+    border-radius: 52px;
+    align-self: left;
+    background-color: rgba(222, 222, 222, 0.42);
+}
+
+.enter-button {
+    background-color: transparent;
+    border: none;
+    margin-left: -6%;
+    margin-right: 2%;
+    cursor: pointer;
+    padding: 1%;
+    align-items: center;
+}
+
+
+.like-button {
+    background-color: #83D495;
+    width: 50px;
+    object-fit: cover;
+    /* mask background as a circle */
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    padding: 1%;
+    align-items: center;
+    margin-right: 1.5%;
+    margin-left: 1%;
+    box-sizing: border-box;
+}
+
+.icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    object-fit: cover;
+    margin-top:15%;
+    margin-left: 1%;
+    margin-right: 1%;
+    color: darkgreen;
+}
+
+.dislike-button {
+    object-fit: cover;
+    width: 50px;
+    background-color: rgba(255, 106, 106, 0.5);
+    /* mask background as a circle */
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    padding: 1%;
+    align-self: bottom;
+    box-sizing: border-box;
+    
+}
+
+.dislike-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-top:15%;
+    margin-bottom: -10%;
+    object-fit: cover;
+    margin-left: 1%;
+    margin-right: 1%;
+    color: darkred;
+    
+}
+
+.liked-border {
+    outline: 3px solid darkgreen;
+    transition: outline 0.3s ease-in-out;
+
+}
+
+.disliked-border {
+    outline: 3px solid darkred; 
+    transition: outline 0.3s ease-in-out;
+
+}
+
+.back-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 1%;
+    align-items: center;
+    margin-left: 10px;  /* Added padding to the left */
+}
+
+.icon-container {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+#icon {
+    width: 2.2rem;
+    height:2.2rem;
+    font-size: 2.2rem;
+    transition: color 0.5s ease-in-out;
+}
+
+#icon:hover {
+    color:#995A10;
+}
+
+.enter-icon {
+    width: 1.7rem;
+    height: 1.7rem;
+    font-size:1.7rem;
+}

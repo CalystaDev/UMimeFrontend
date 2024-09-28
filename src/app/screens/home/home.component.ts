@@ -7,6 +7,7 @@ import { PastMimesService } from '../../../services/past-mimes.service';
 import { FormsModule } from '@angular/forms';
 import { Mime } from '../../../services/mimes.model';
 import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +23,7 @@ export class HomeComponent implements OnInit {
 
   hosts: string[] = ['Host 1', 'Host 2', 'Host 3', 'Host 4'];
 
-  constructor(private mimeService: PastMimesService, private authService: AuthService // Inject AuthService
+  constructor(private mimeService: PastMimesService, private authService: AuthService, private router: Router
   ) { }
 
   ngOnInit() {
@@ -33,7 +34,7 @@ export class HomeComponent implements OnInit {
     console.log('Selected Host:', this.selectedHost);
 
     if (this.selectedHost) {
-      alert(`Let's mime with ${this.selectedHost}!`);
+      this.router.navigate(['/mime-new']);
     } else {
       alert('Please select a host before proceeding.');
     }
