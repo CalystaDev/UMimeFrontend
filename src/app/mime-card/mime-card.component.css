@@ -5,6 +5,7 @@
     border-radius: 19px;
     margin-bottom: 5%;
     box-shadow: #FDF8F7 0px 0px 10px;
+    cursor: pointer;
 }
 
 .mime-card h3 {

@@ -1,0 +1,43 @@
+<div class="container">
+    <header>
+        <button class="back-button" (click)="onBack()">
+            <mat-icon id="icon">arrow_back</mat-icon>
+            <!-- <img src="assets/arrow-right.png" class="back-icon"/> -->
+        </button>
+
+        <!-- go to profile page! -->
+        <button class="icon-container">
+            <mat-icon id="icon">person_outline</mat-icon>
+        </button>
+    </header>
+    <main>
+        <h1>a baked mac n cheese that is healthy</h1>
+        <h3>xoxo, your valley girl</h3>
+        <video controls>
+            <source src="assets/macncheese.mp4" type="video/mp4">
+            Your mime is not ready yet! Please check back later.
+        </video>
+        <div class="feedback">
+            <input type="text" placeholder="any feedback??" class="rounded-input"/>
+            <button class="enter-button">
+                <mat-icon class="enter-icon">turn_right</mat-icon>
+                <!-- <img src="assets/enter.png" class="enter-icon"/> -->
+            </button>
+            <button class="like-button"
+            [ngClass]="{'liked-border': liked}" 
+                (click)="onLike()" 
+                >
+                <mat-icon class="icon">thumb_up</mat-icon>
+                <!-- <img src="assets/thumbs-up.png" class="icon"/> -->
+            </button>
+            <button class="dislike-button"
+            [ngClass]="{'disliked-border': disliked}" 
+                (click)="onDislike()" 
+                >
+                <mat-icon class="dislike-icon">thumb_down</mat-icon>
+                <!-- <img src="assets/thumbs-down.png" class="dislike-icon"/> -->
+            </button>
+        </div>
+        
+    </main>
+</div>

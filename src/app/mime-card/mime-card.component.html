@@ -1,4 +1,7 @@
-<div class="mime-card">
-    <h3>{{ title }}</h3>
-    <p>Hosts: <b>{{ host }}</b></p>
+<div class="mime-card" (click)="onCardClick()">
+    <a>
+        <h3>{{ title }}</h3>
+        <p>Hosts: <b>{{ host }}</b></p>
+    </a>
+    
 </div>

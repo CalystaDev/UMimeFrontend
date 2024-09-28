@@ -16,8 +16,8 @@ export class PastMimesService {
     rating: 5,
     script:"someScrupt", 
     status: "someStatus",
-    videoUrl: "someUrl"
-
+    videoUrl: "someUrl",
+    prompt: "somePrompt"
     },
     // Add more projects as needed
   ];
