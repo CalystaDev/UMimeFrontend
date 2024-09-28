@@ -34,9 +34,10 @@
       <div class="divider"></div>
       <div class="past-mimes">
         <h2>past mimes:</h2>
+        <p *ngIf="!mimes || mimes.length === 0">No mimes to display.</p>
         <app-mime-card *ngFor="let mime of mimes" [title]="mime.title" [host]="mime.hID"></app-mime-card>
-
-        <app-mime-new />
+<!-- No need for new mime button since it is on the home page and can mislead users. -->
+        <!-- <app-mime-new /> -->
       </div>
     </div>
   </div>
