@@ -9,9 +9,10 @@ import { HomeComponent } from './screens/home/home.component';
   imports: [RouterOutlet, HomeComponent],
   template: `
   <main>
-    <section class="content">
+    <!-- <section class="content">
       <app-home></app-home>
-    </section>
+    </section> -->
+    <router-outlet></router-outlet>
   </main>
 `,
   styleUrl: './app.component.css'
