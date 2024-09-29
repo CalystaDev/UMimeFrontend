@@ -12,12 +12,12 @@
         <h3>check out who we have on line!</h3>
         
         <div class="hosts-list">
-            <ng-container *ngFor="let host of hosts">
+            <ng-container *ngFor="let host of hosts$ | async">
                 <app-host-card 
-                  [hostPhotoURL]="host.hostPhotoURL" 
-                  [hostDisplayName]="host.hostDisplayName" 
+                  [hostPhotoURL]="host.profilePictureURL" 
+                  [hostDisplayName]="host.description" 
                   [uses]="host.uses" 
-                  [tags]="host.tags">
+                  [tags]="host.tags" class="card">
                 </app-host-card>
             </ng-container>
         </div>
