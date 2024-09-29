@@ -21,7 +21,7 @@ import { Host, HostService } from '../../../services/hosts.model';
 })
 export class HomeComponent implements OnInit {
   mimes: Mime[] = [];
-  mimePrompt: string = ' '
+  mimePrompt: string = ''
   selectedHost: string = ''
   user$: Observable<User | null>;
 
