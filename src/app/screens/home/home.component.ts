@@ -34,8 +34,16 @@ export class HomeComponent implements OnInit {
     this.user$ = this.authService.user$;
   }
 
-  ngOnInit() {
-    this.mimes = this.mimeService.getMimes();
+  ngOnInit(): void {
+    this.user$.subscribe(user => {
+      if (user) {
+        this.authService.getUserMimes(user.uid).then(mimes => {
+          console.log('Mimes:', mimes);
+          this.mimes = mimes;
+        })
+      }
+    })
+
   }
 
   onLetsMimeClick() {
@@ -59,6 +67,7 @@ export class HomeComponent implements OnInit {
   signOut() {
     this.authService.signOut().then(() => {
       console.log('Sign-out successful');
+      console.log(this.user$);
     }).catch(error => {
       console.error('Sign-out failed', error);
     });
@@ -66,5 +75,9 @@ export class HomeComponent implements OnInit {
 
   onHostDirectoryClick() {
     this.router.navigate(['/host-directory']);
+  }
+
+  getHostNames(mime: Mime): string {
+    return this.mimeService.getHostNames(mime.hosts);
   }
 }

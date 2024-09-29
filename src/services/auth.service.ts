@@ -4,7 +4,9 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../app/environment';
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc, collection, getDocs, getDoc } from 'firebase/firestore';
+import { Mime } from './mimes.model';
+import { Host } from './hosts.model';
 
 @Injectable({
   providedIn: 'root'
@@ -38,8 +40,7 @@ export class AuthService {
       console.log('Signed in successfully', user.uid);
       
       await this.createUserDocument(user);
-      
-      this.router.navigate(['/dashboard']);
+      console.log('User document created/updated successfully for:', user.uid);
     } catch (error) {
       console.error('Error during sign in', error);
     }
@@ -54,6 +55,7 @@ export class AuthService {
       if (!userSnap.exists()) {
         console.log('Creating new user document');
         const userData = {
+          id: user.uid,
           createdAt: new Date(),
           displayName: user.displayName || '',
           email: user.email || '',
@@ -86,4 +88,63 @@ export class AuthService {
   getCurrentUser(): User | null {
     return this.auth.currentUser;
   }
+
+  async getUserMimes(userId: string): Promise<Mime[]> {
+    console.log('Fetching mimes for user:', userId);
+    const userRef = doc(this.db, 'users', userId);
+    console.log('User ref:', userRef.path);
+    try {
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        console.log('User document does not exist');
+        return [];
+      }
+
+      const userData = userSnap.data();
+      console.log('User data:', userData);
+      const mimes: Mime[] = userData['mimes'] || [];
+      for (const mime of mimes) {
+        console.log('Mime:', mime);
+        if (mime.hosts) {
+          mime.hosts = await this.resolveHosts(mime.hosts);
+        }
+      }
+
+      console.log('User mimes:', mimes);
+      return mimes;
+    } catch (error) {
+      console.error('Error fetching user mimes:', error);
+      return [];
+    }
+  }
+
+  private async resolveHosts(hostIds: any): Promise<Host[]> {
+    const hosts: Host[] = [];
+    for (const hostId of hostIds) {
+      const hostRef = doc(this.db, 'hosts', hostId);
+      console.log('Host ref:', hostRef.path);
+      try {
+        const hostSnap = await getDoc(hostRef);
+        if (hostSnap.exists()) {
+          const hostData = hostSnap.data();
+          console.log('Host data:', hostData);
+          const host: Host = {
+            hid: hostSnap.id,
+            displayName: hostData['description'],
+            profilePictureURL: hostData['profilePictureURL'],
+            tags: hostData['tags'],
+            wpm: hostData['wpm'],
+            uses: hostData['uses']
+          };
+          hosts.push(host);
+          
+        }
+      } catch (error) {
+        console.error('Error fetching host:', error);
+      }
+    }
+    console.log('Resolved hosts:', hosts);
+    return hosts;
+  }
+
 }

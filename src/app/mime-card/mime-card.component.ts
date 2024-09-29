@@ -4,6 +4,7 @@ import { Mime } from '../../services/mimes.model';
 import { Router } from "@angular/router";
 import { AuthService } from '../../services/auth.service';
 import { take } from 'rxjs/operators';
+// import { Host } from '../../services/hosts.model';
 
 @Component({
   selector: 'app-mime-card',
@@ -14,17 +15,13 @@ import { take } from 'rxjs/operators';
 })
 export class MimeCardComponent {
   @Input() title!: string;
-  @Input() host!: string;
+  @Input() hostName!: string;
 
   constructor(
     private mimeService: PastMimesService, 
     private router: Router,
     private authService: AuthService
   ) {}
-
-  getMimes(): Mime[] {
-    return this.mimeService.getMimes();
-  }
 
   onCardClick(): void {
     this.authService.user$.pipe(take(1)).subscribe(user => {
