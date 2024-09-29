@@ -10,6 +10,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { User } from 'firebase/auth';
+import { Host, HostService } from '../../../services/hosts.model';
 
 @Component({
   selector: 'app-home',
@@ -24,11 +25,12 @@ export class HomeComponent implements OnInit {
   selectedHost: string = ''
   user$: Observable<User | null>;
 
-  hosts: string[] = ['Host 1', 'Host 2', 'Host 3', 'Host 4'];
+  hostNames: Host[] = [];
 
   constructor(
     private mimeService: PastMimesService,
     private authService: AuthService,
+    private hostService: HostService,
     private router: Router
   ) {
     this.user$ = this.authService.user$;
@@ -36,6 +38,9 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.mimes = this.mimeService.getMimes();
+    this.hostService.getHosts().subscribe(hosts => {
+      this.hostNames = hosts;
+    });
   }
 
   onLetsMimeClick() {
