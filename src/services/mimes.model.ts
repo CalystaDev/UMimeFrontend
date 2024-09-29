@@ -1,11 +1,14 @@
+import { Host } from './hosts.model';
+
 export interface Mime {
+    id: string;
     createdAt: Date;
     title: string;
     duration: number;
-    hID: string;
+    hosts: Host[];
     rating: number;
     prompt: string;
     script: string;
     status?: string;
     videoUrl?: string;
-  }
+}

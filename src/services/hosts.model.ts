@@ -1,7 +1,5 @@
-import { Mime } from "./mimes.model";
-
-export interface Hosts {
-    decription: string;
+export interface Host {
+    hid: string;
     displayName: string;
     profilePictureURL: string;
     tags: string[];
