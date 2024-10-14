@@ -40,7 +40,7 @@
         <div class="input-container-host">
           <select id="input-host" [(ngModel)]="selectedHost">
             <option value="" disabled selected>select your narrator</option>
-            <option *ngFor="let host of hosts" [value]="host"> {{ host }}</option>
+            <option *ngFor="let host of hostNames" [value]="host"> {{ host.description }}</option>
           </select>
           <button (click)="onLetsMimeClick()"> let's mime </button>
         </div>
