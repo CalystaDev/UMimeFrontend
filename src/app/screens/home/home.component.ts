@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
   mimePrompt: string = ' '
   selectedHost: string = ''
   user$: Observable<User | null>;
+  logoutConfirm: boolean = false;
 
   hosts: string[] = ['Host 1', 'Host 2', 'Host 3', 'Host 4'];
 
@@ -59,6 +60,7 @@ export class HomeComponent implements OnInit {
   signOut() {
     this.authService.signOut().then(() => {
       console.log('Sign-out successful');
+      this.logoutConfirm = false;
     }).catch(error => {
       console.error('Sign-out failed', error);
     });
@@ -66,5 +68,16 @@ export class HomeComponent implements OnInit {
 
   onHostDirectoryClick() {
     this.router.navigate(['/host-directory']);
+  }
+
+  toggleLogout() {
+    if (this.user$) {
+      this.logoutConfirm = true;
+    }
+    
+  }
+
+  cancelSignOut() {
+    this.logoutConfirm = false; // Hide confirmation dialog
   }
 }

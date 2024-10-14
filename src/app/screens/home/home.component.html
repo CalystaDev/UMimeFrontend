@@ -2,8 +2,16 @@
     <main>
       <ng-container *ngIf="(user$ | async) as user; else signInButton">
         <button class="icon-container">
-          <img [src]="user.photoURL" alt="Profile" (click)="signOut()" style="width: 24px; height: 24px;">
+          <img [src]="user.photoURL" alt="Profile" (click)="toggleLogout()">
         </button>
+
+        <div *ngIf="logoutConfirm" class="modal-overlay"></div>
+
+        <div *ngIf="logoutConfirm" class="confirmation-dialog">
+          <p>Are you sure you want to log out?</p>
+          <button (click)="signOut()">Yes</button>
+          <button (click)="cancelSignOut()">No</button>
+        </div>
       </ng-container>
       <ng-template #signInButton>
         <button class="icon-container">
