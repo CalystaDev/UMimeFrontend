@@ -5,9 +5,11 @@ import { Observable, map } from "rxjs";
 
 
 export interface Host {
-    id: string;
+    hid: string;
     apiMappedID: string;
     description: string;
+    displayName: string;
+
     profilePictureURL: string;
     tags: string[];
     wpm: number;
