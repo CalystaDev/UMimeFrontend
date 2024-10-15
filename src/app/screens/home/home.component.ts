@@ -10,6 +10,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { User } from 'firebase/auth';
+import { Host, HostService } from '../../../services/hosts.model';
 
 @Component({
   selector: 'app-home',
@@ -20,19 +21,22 @@ import { User } from 'firebase/auth';
 })
 export class HomeComponent implements OnInit {
   mimes: Mime[] = [];
-  mimePrompt: string = ' '
+  mimePrompt: string = ''
   selectedHost: string = ''
   user$: Observable<User | null>;
+  logoutConfirm: boolean = false;
 
-  hosts: string[] = ['Host 1', 'Host 2', 'Host 3', 'Host 4'];
+  hostNames: Host[] = [];
 
   constructor(
     private mimeService: PastMimesService,
     private authService: AuthService,
+    private hostService: HostService,
     private router: Router
   ) {
     this.user$ = this.authService.user$;
   }
+
 
   ngOnInit(): void {
     this.user$.subscribe(user => {
@@ -43,6 +47,7 @@ export class HomeComponent implements OnInit {
         })
       }
     })
+
 
   }
 
@@ -67,7 +72,11 @@ export class HomeComponent implements OnInit {
   signOut() {
     this.authService.signOut().then(() => {
       console.log('Sign-out successful');
+
       console.log(this.user$);
+
+      this.logoutConfirm = false;
+
     }).catch(error => {
       console.error('Sign-out failed', error);
     });
@@ -77,7 +86,18 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/host-directory']);
   }
 
+
   getHostNames(mime: Mime): string {
     return this.mimeService.getHostNames(mime.hosts);
+  }
+  toggleLogout() {
+    if (this.user$) {
+      this.logoutConfirm = true;
+    }
+    
+  }
+
+  cancelSignOut() {
+    this.logoutConfirm = false; // Hide confirmation dialog
   }
 }
