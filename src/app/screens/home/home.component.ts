@@ -47,7 +47,10 @@ export class HomeComponent implements OnInit {
         })
       }
     })
-
+    this.hostService.getHosts().subscribe(hosts => {
+      this.hostNames = hosts;
+      console.log('Hosts:', this.hostNames);
+    });
 
   }
 

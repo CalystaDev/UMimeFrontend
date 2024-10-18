@@ -9,7 +9,6 @@ export interface Host {
     apiMappedID: string;
     description: string;
     displayName: string;
-
     profilePictureURL: string;
     tags: string[];
     wpm: number;

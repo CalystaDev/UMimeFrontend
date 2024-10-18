@@ -134,7 +134,9 @@ export class AuthService {
             profilePictureURL: hostData['profilePictureURL'],
             tags: hostData['tags'],
             wpm: hostData['wpm'],
-            uses: hostData['uses']
+            uses: hostData['uses'],
+            apiMappedID: hostData['apiMappedId'],
+            description: hostData['description'],
           };
           hosts.push(host);
           
