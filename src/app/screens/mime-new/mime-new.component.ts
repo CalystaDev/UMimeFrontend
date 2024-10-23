@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Host } from '../../../services/hosts.model';
 
 
 @Component({
@@ -11,6 +13,20 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './mime-new.component.css'
 })
 export class MimeNewComponent {
+  selectedHost: Host | null = null;
+  sub = null;
+
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+
+  ngOnInit() {
+    const state = this.router.getCurrentNavigation()?.extras.state || history.state;
+    if (state) {
+      this.selectedHost = state.host as Host;
+      console.log('Selected Host in Mime New:', state.host.hid, state.host.description);
+    }
+    console.log('Selected Host in Mime New:', this.selectedHost);
+  }
+
   liked = false;
   disliked = false;
 

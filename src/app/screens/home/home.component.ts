@@ -22,7 +22,7 @@ import { Host, HostService } from '../../../services/hosts.model';
 export class HomeComponent implements OnInit {
   mimes: Mime[] = [];
   mimePrompt: string = ''
-  selectedHost: string = ''
+  selectedHost: Host | null = null;
   user$: Observable<User | null>;
   logoutConfirm: boolean = false;
 
@@ -55,13 +55,17 @@ export class HomeComponent implements OnInit {
   }
 
   onLetsMimeClick() {
-    console.log('Selected Host:', this.selectedHost);
+    console.log('Selected Host:', this.selectedHost?.hid, this.selectedHost?.description);
 
     if (this.selectedHost) {
-      this.router.navigate(['/mime-new']);
+      this.router.navigate(['/mime-new'], { state: { host: this.selectedHost}});
     } else {
       alert('Please select a host before proceeding.');
     }
+  }
+
+  logSelectedHost() {
+    console.log('Selected Host:', this.selectedHost);
   }
 
   onPersonClick() {
@@ -79,6 +83,7 @@ export class HomeComponent implements OnInit {
       console.log(this.user$);
 
       this.logoutConfirm = false;
+      this.mimes = [];
 
     }).catch(error => {
       console.error('Sign-out failed', error);

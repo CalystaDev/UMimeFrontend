@@ -29,7 +29,7 @@ export class HostService {
             map((hosts: any[]) => {
                 return hosts.map(host => {
                     return {
-                        id: host.id,
+                        hid: host.id,
                         apiMappedID: host.apiMappedID,
                         description: host.description,
                         profilePictureURL: host.profilePhotoURL,

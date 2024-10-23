@@ -4,6 +4,7 @@ import { Mime } from '../../services/mimes.model';
 import { Router } from "@angular/router";
 import { AuthService } from '../../services/auth.service';
 import { take } from 'rxjs/operators';
+import { Host } from '../../services/hosts.model';
 // import { Host } from '../../services/hosts.model';
 
 @Component({
@@ -15,7 +16,7 @@ import { take } from 'rxjs/operators';
 })
 export class MimeCardComponent {
   @Input() title!: string;
-  @Input() hostName!: string;
+  @Input() host!: Host;
 
   constructor(
     private mimeService: PastMimesService, 
@@ -27,12 +28,12 @@ export class MimeCardComponent {
     this.authService.user$.pipe(take(1)).subscribe(user => {
       if (user) {
         console.log('User is signed in, navigating to mime-new');
-        this.router.navigate(['/mime-new']);
+        this.router.navigate(['/mime-new'], { state: { host: this.host }});
       } else {
         console.log('User is not signed in, initiating sign-in process');
         this.authService.googleSignIn().then(() => {
           console.log('Sign-in successful, navigating to mime-new');
-          this.router.navigate(['/mime-new']);
+          this.router.navigate(['/mime-new'], { state: { host: this.host }});
         }).catch(error => {
           console.error('Sign-in failed', error);
         });
