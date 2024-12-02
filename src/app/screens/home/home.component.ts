@@ -12,6 +12,7 @@ import { Observable } from 'rxjs';
 import { User } from 'firebase/auth';
 import { Host, HostService } from '../../../services/hosts.model';
 
+
 @Component({
   selector: 'app-home',
   standalone: true,

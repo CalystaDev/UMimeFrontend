@@ -1,9 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Host } from '../../../services/hosts.model';
-
+import { PastMimesService } from '../../../services/past-mimes.service';
+import { AuthService } from '../../../services/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-mime-new',
@@ -12,19 +14,68 @@ import { Host } from '../../../services/hosts.model';
   templateUrl: './mime-new.component.html',
   styleUrl: './mime-new.component.css'
 })
-export class MimeNewComponent {
+export class MimeNewComponent implements OnInit, OnDestroy {
   selectedHost: Host | null = null;
   sub = null;
+  prompt: string = '';
+  status: string = 'Processing';
+  error: string | null = null;
+  mimeId: string | null = null;
+  private statusSubscription: Subscription | null = null;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private pastMimesService: PastMimesService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit() {
     const state = this.router.getCurrentNavigation()?.extras.state || history.state;
     if (state) {
       this.selectedHost = state.host as Host;
-      console.log('Selected Host in Mime New:', state.host.hid, state.host.description);
+      this.prompt = state.prompt;
+      console.log('Selected Host in Mime New:', this.selectedHost?.hid, this.selectedHost?.description);
+      
+      if (this.selectedHost && this.prompt) {
+        this.createMime();
+      }
     }
-    console.log('Selected Host in Mime New:', this.selectedHost);
+  }
+  ngOnDestroy() {
+    if (this.statusSubscription) {
+      this.statusSubscription.unsubscribe();
+    }
+  }
+
+  private async createMime() {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (!user) throw new Error('No user logged in');
+      
+      this.mimeId = await this.pastMimesService.createMime(this.prompt, this.selectedHost!.hid);
+      
+      // Start polling for status
+      this.statusSubscription = this.pastMimesService.pollMimeStatus(user.uid, this.mimeId)
+        .subscribe({
+          next: (status) => {
+            this.status = status;
+            if (status === 'Complete') {
+              // Handle completion (maybe show the video)
+              console.log('Mime generation completed');
+            } else if (status === 'Error') {
+              this.error = 'Failed to generate mime. Please try again.';
+            }
+          },
+          error: (error) => {
+            console.error('Error polling mime status:', error);
+            this.error = 'Error checking mime status';
+          }
+        });
+    } catch (error) {
+      console.error('Error creating mime:', error);
+      this.error = 'Failed to create mime. Please try again.';
+    }
   }
 
   liked = false;

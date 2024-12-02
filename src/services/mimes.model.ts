@@ -1,7 +1,7 @@
 import { Host } from './hosts.model';
 
 export interface Mime {
-    id: string;
+    mid: string;
     createdAt: Date;
     title: string;
     duration: number;
