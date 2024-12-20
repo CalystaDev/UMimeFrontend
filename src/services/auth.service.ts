@@ -132,11 +132,11 @@ export class AuthService {
           const host: Host = {
             hid: hostSnap.id,
             displayName: hostData['description'],
-            profilePictureURL: hostData['profilePictureURL'],
+            profilePictureURL: hostData['profilePhotoURL'],
             tags: hostData['tags'],
             wpm: hostData['wpm'],
             uses: hostData['uses'],
-            apiMappedID: hostData['apiMappedId'],
+            apiMappedID: hostData['apiMappedID'],
             description: hostData['description'],
           };
           hosts.push(host);
