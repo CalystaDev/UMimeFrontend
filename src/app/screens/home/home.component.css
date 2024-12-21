@@ -258,7 +258,7 @@ h2 {
 }
 
 #input-host {
-    padding: 4%;
+    padding: 2%;
     width: 40%;
     align-self: flex-start;
     margin-left: 2%;
@@ -282,8 +282,8 @@ h2 {
 }
 
 #input-video {
-    padding: 4%;
-    width: 60%;
+    padding: 2%;
+    width: 55%;
     align-self: flex-start;
     margin-left: 2%;
     margin-top: 1.5%;
@@ -310,13 +310,15 @@ h2 {
     color: #FFF;
     border: none;
     border-radius: 50px;
-    padding: 0.75rem 1.5rem;  /* Adjusted padding for more space */
+    padding: 2%;
+    padding-left: 4%;
+    padding-right: 4%;
     font-family: 'Readex Pro Bold';
     font-size: 1rem;
     cursor: pointer;
     align-self: center;
     white-space: nowrap;  
-    margin-bottom: 4%;
+    margin-top: 1.5%;
     transition: background-color 0.3s ease-in-out, transform 0.2s ease;
 }
 
