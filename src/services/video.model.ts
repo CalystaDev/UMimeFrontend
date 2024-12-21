@@ -22,7 +22,7 @@ export class VideoService {
     videos$: Observable<Video[]>;
 
     constructor() {
-        const videoCollection = collection(this.firestore, 'videos');
+        const videoCollection = collection(this.firestore, 'background_vids');
         this.videos$ = collectionData(videoCollection, { idField: 'id'}).pipe(
             map((videos: any[]) => {
                 return videos.map(video => {

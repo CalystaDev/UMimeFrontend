@@ -213,6 +213,22 @@ b {
     width: 16%;
 }
 
+.video-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-self: center;
+    gap: 2%;
+    margin-right: 10%;
+    margin-left: 5%;
+}
+
+.video-card {
+    /* make smaller to fit 4 in one row */
+    width: 30%;
+}
+
 .subtitle-with-logo {
     display: flex;
     flex-direction: row;

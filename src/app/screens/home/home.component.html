@@ -68,10 +68,10 @@
           <h2> choose your background video</h2>
         </div>
         <p id="info"> Click on one of the videos to move forward. </p>
-        <div class="host-list">
+        <div class="video-list">
           <div
-            class="host-card"
-            *ngFor="let video of videoData"
+            class="video-card"
+            *ngFor="let video of videos"
             [class.selected]="video === selectedVideo"
             (click)="selectVideo(video)"
           >
@@ -81,6 +81,7 @@
             [uses]="video.uses"
             [tags]="video.tags"
             [description]="video.description"
+            [url]="video.url"
             class="card">
           </app-video-card>
             
@@ -89,7 +90,7 @@
         <div class="input-container-host">
           <select id="input-video" [(ngModel)]="selectedVideo" (change)="logSelectedVideo()">
             <option [ngValue]="null" disabled selected>select your background video</option>
-            <option *ngFor="let video of videoData" [ngValue]="video">{{ video.title }}</option>
+            <option *ngFor="let video of videos" [ngValue]="video">{{ video.title }}</option>
           </select>
           <button (click)="onLetsMimeClick()"> let's mime </button>
         </div>

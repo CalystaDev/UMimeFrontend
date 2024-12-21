@@ -34,37 +34,6 @@ export class HomeComponent implements OnInit {
   videos: Video[] = [];
   hosts: Host[] = [];
 
-  // Dummy Video Data
-  videoData: Video[] = [
-    {
-      vid: '1',
-      title: 'Video 1',
-      description: 'Description 1',
-      thumbnail: 'https://via.placeholder.com/150',
-      url: 'https://www.youtube.com/watch?v=1',
-      tags: ['tag1', 'tag2'],
-      uses: 1
-    },
-    {
-      vid: '2',
-      title: 'Video 2',
-      description: 'Description 2',
-      thumbnail: 'https://via.placeholder.com/150',
-      url: 'https://www.youtube.com/watch?v=2',
-      tags: ['tag1', 'tag2'],
-      uses: 2
-    },
-    {
-      vid: '3',
-      title: 'Video 3',
-      description: 'Description 3',
-      thumbnail: 'https://via.placeholder.com/150',
-      url: 'https://www.youtube.com/watch?v=3',
-      tags: ['tag1', 'tag2'],
-      uses: 3
-    }
-  ]; 
-
   constructor(
     private mimeService: PastMimesService,
     private authService: AuthService,
