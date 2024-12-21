@@ -194,6 +194,7 @@ b {
 
 .host-select {
     margin-top: -1%;
+    margin-bottom: 2%;
 }
 
 .host-list {
@@ -406,4 +407,8 @@ h2 {
     object-fit: cover;
     margin-top: 0.5%;
     justify-content: center;
+  }
+
+  .video-select {
+    margin-bottom: 3%;
   }
