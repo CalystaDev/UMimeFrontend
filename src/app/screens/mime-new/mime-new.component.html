@@ -18,8 +18,8 @@
             Your mime is not ready yet! Please check back later.
         </video>
         <div class="feedback">
-            <input type="text" placeholder="any feedback??" class="rounded-input"/>
-            <button class="enter-button">
+            <input type="text" placeholder="any feedback??" class="rounded-input" [(ngModel)]="feedbackText"/>
+            <button class="enter-button" (click)="onClickFeedback()">
                 <mat-icon class="enter-icon">turn_right</mat-icon>
                 <!-- <img src="assets/enter.png" class="enter-icon"/> -->
             </button>

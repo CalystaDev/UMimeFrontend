@@ -1,0 +1,11 @@
+<div class="feedback-card">
+    <h2>{{ feedback.userName }}</h2>
+    <p class="feedback-date">{{ feedback.date | date: 'medium' }}</p>
+    <p class="feedback-text">{{ feedback.main_description }}</p>
+    <div class="feedback-meta">
+      <span>Rating: {{ feedback.rating }}</span>
+    </div>
+    <!-- View Mime Button -->
+    <button class="view-mime-button" (click)="viewMime()">View Mime</button>
+  </div>
+  
