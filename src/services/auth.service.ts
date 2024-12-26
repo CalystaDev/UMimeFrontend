@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
 import { BehaviorSubject, Observable } from 'rxjs';
-import { environment } from '../app/environment';
+import { environment, apiUrl } from '../app/environment';
 import { getFirestore, doc, setDoc, collection, getDocs, getDoc } from 'firebase/firestore';
 import { Mime } from './mimes.model';
 import { Host } from './hosts.model';
@@ -16,6 +16,7 @@ export class AuthService {
   private db: any;
   private userSubject: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
   user$: Observable<User | null> = this.userSubject.asObservable();
+  private apiUrl = apiUrl;  // Your Python backend URL
 
   constructor(private router: Router) {
     console.log('Initializing AuthService');
@@ -131,11 +132,11 @@ export class AuthService {
           const host: Host = {
             hid: hostSnap.id,
             displayName: hostData['description'],
-            profilePictureURL: hostData['profilePictureURL'],
+            profilePictureURL: hostData['profilePhotoURL'],
             tags: hostData['tags'],
             wpm: hostData['wpm'],
             uses: hostData['uses'],
-            apiMappedID: hostData['apiMappedId'],
+            apiMappedID: hostData['apiMappedID'],
             description: hostData['description'],
           };
           hosts.push(host);

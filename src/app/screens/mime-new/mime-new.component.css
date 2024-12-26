@@ -22,6 +22,9 @@ main {
     margin-left: 20%;
     margin-right: 20%;
     margin-top:-2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centers children vertically */
 }
 
 h1 {
@@ -42,9 +45,11 @@ h3 {
 }
 
 video {
-    width: 100%;
+    width: 40%;
     height: auto;
+    margin: 0 auto;
     padding-top: 2%;
+    display: block;
 }
 
 .feedback {
