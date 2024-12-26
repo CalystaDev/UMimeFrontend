@@ -20,13 +20,18 @@ html, body {
     display: flex;
     padding: 0;
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh; /* Ensure it grows beyond 100vh if content overflows */
+    height: auto; /* Allow dynamic height adjustment */
+    align-items: stretch; 
 }
 
 main {
-    flex-grow:1.2;
+    flex: 1; /* Allow `main` to grow and take up available space */
     padding-left: 4%;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+    height: auto; /* Adjust to content height */
 }
 
 .icon-container {
@@ -111,7 +116,8 @@ h1 {
 }
 
 .right-section {
-    flex:1;
+    flex: 1;
+    max-width: 25%;
     background-color: #FFBA68;
     display: flex;
     flex-direction: row;
@@ -119,7 +125,8 @@ h1 {
 }
 
 .divider {
-    height: 100%;
+    /* height: 100vh; */
+    align-self: stretch;
     width: 0.25rem;
     background-color: #995A10;
 }
@@ -187,7 +194,39 @@ b {
 
 .host-select {
     margin-top: -1%;
-    width: 100%;
+    margin-bottom: 2%;
+}
+
+.host-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-self: center;
+    gap: 2%;
+    margin-right: 10%;
+    margin-left: 5%;
+}
+
+.host-card {
+    /* make smaller to fit 4 in one row */
+    width: 16%;
+}
+
+.video-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-self: center;
+    gap: 2%;
+    margin-right: 10%;
+    margin-left: 5%;
+}
+
+.video-card {
+    /* make smaller to fit 4 in one row */
+    width: 30%;
 }
 
 .subtitle-with-logo {
@@ -218,6 +257,7 @@ h2 {
     font-style: italic;
     padding-left: 4.5%;
     margin-top: -2%;
+    margin-bottom: 2%;
     font-size: 14px;
 
 }
@@ -236,9 +276,10 @@ h2 {
 
 #input-host {
     padding: 2%;
-    width: 75%;
+    width: 40%;
     align-self: flex-start;
     margin-left: 2%;
+    margin-top: 1.5%;
     border-radius: 50px;
     border: 3px solid #995A10;
     font-family: 'Readex Pro Normal';
@@ -257,19 +298,44 @@ h2 {
     padding-right: 2%;
 }
 
+#input-video {
+    padding: 2%;
+    width: 55%;
+    align-self: flex-start;
+    margin-left: 2%;
+    margin-top: 1.5%;
+    border-radius: 50px;
+    border: 3px solid #995A10;
+    font-family: 'Readex Pro Normal';
+    font-size: 16px;
+    color: #6a6864;
+    background-color: #F1E8DD;
+    transition: background-color 0.5s ease-in-out; 
+}
+
+#input-video:focus, #input-video:hover {
+    background-color: #FFF; 
+}
+
+#input-video option {
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
 .input-container-host button {
     background-color: #995A10;
     color: #FFF;
     border: none;
     border-radius: 50px;
-    padding: 0.75rem 1.5rem;  /* Adjusted padding for more space */
+    padding: 2%;
+    padding-left: 4%;
+    padding-right: 4%;
     font-family: 'Readex Pro Bold';
     font-size: 1rem;
     cursor: pointer;
     align-self: center;
     white-space: nowrap;  
-    padding-top: 3%;
-    padding-bottom: 3%;
+    margin-top: 1.5%;
     transition: background-color 0.3s ease-in-out, transform 0.2s ease;
 }
 
@@ -278,6 +344,8 @@ h2 {
     transform: scale(1.05);
     transition: background-color 0.3s ease-in-out, transform 0.2s ease;
 }
+
+
 
 
 #host_directory {
@@ -347,4 +415,16 @@ h2 {
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000; 
     pointer-events: auto; 
+  } 
+
+  .video-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    object-fit: cover;
+    margin-top: 0.5%;
+    justify-content: center;
+  }
+
+  .video-select {
+    margin-bottom: 3%;
   }

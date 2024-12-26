@@ -1,0 +1,20 @@
+<div class="card">
+    <video
+      #videoElement
+      [src]="url"
+      class="thumbnail"
+      autoplay
+      muted
+      loop
+      (loadedmetadata)="onLoadedMetadata(videoElement)"
+      type="video/quicktime"
+    ></video>
+    <h2>{{ title }}</h2>
+    <h3>{{ uses }} uses</h3>
+    <p>
+      <span *ngFor="let tag of tags; let i = index">
+        {{ tag }}{{ i === tags.length - 1 ? '' : ', ' }}
+      </span>
+    </p>
+  </div>
+  

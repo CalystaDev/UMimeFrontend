@@ -35,16 +35,67 @@
           <img src="assets/mic.png" class="mic-icon">
           <h2> choose your host</h2>
         </div>
-        <p id="info"> Want to see our mime hosts?  Check out our
+        <p id="info"> Click on one of the hosts to move forward.  Want to see our mime hosts?  Check out our
           <a (click)="onHostDirectoryClick()" id="host_directory"> host directory </a>  here! </p>
+        <div class="host-list">
+          <div
+            class="host-card"
+            *ngFor="let host of hosts"
+            [class.selected]="host === selectedHost"
+            (click)="selectHost(host)"
+          >
+            <app-host-card 
+            [hostPhotoURL]="host.profilePictureURL" 
+            [hostDisplayName]="host.description" 
+            [uses]="host.uses" 
+            [tags]="host.tags" class="card">
+          </app-host-card>
+          </div>
+        </div>
         <div class="input-container-host">
           <select id="input-host" [(ngModel)]="selectedHost" (change)="logSelectedHost()">
             <option [ngValue]="null" disabled selected>select your narrator</option>
-            <option *ngFor="let host of hostNames" [ngValue]="host">{{ host.description }}</option>
+            <option *ngFor="let host of hosts" [ngValue]="host">{{ host.description }}</option>
+          </select>
+          <!-- <button (click)="onLetsMimeClick()"> let's mime </button> -->
+        </div>
+      </div>
+
+
+      <div class="video-select" *ngIf="mimePrompt && selectedHost">
+        <div class="subtitle-with-logo">
+          <img src="assets/video_icon.png" class="video-icon">
+          <h2> choose your background video</h2>
+        </div>
+        <p id="info"> Click on one of the videos to move forward. </p>
+        <div class="video-list">
+          <div
+            class="video-card"
+            *ngFor="let video of videos"
+            [class.selected]="video === selectedVideo"
+            (click)="selectVideo(video)"
+          >
+            <app-video-card 
+            [thumbnail]="video.thumbnail"
+            [title]="video.title"
+            [uses]="video.uses"
+            [tags]="video.tags"
+            [description]="video.description"
+            [url]="video.url"
+            class="card">
+          </app-video-card>
+            
+          </div>
+        </div>
+        <div class="input-container-host">
+          <select id="input-video" [(ngModel)]="selectedVideo" (change)="logSelectedVideo()">
+            <option [ngValue]="null" disabled selected>select your background video</option>
+            <option *ngFor="let video of videos" [ngValue]="video">{{ video.title }}</option>
           </select>
           <button (click)="onLetsMimeClick()"> let's mime </button>
         </div>
       </div>
+
     </main>
     <div class="right-section">
       <div class="divider"></div>

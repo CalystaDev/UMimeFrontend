@@ -11,11 +11,15 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { User } from 'firebase/auth';
 import { Host, HostService } from '../../../services/hosts.model';
+import { HostCardComponent } from "../host-directory/host-card/host-card.component";
+import { Video, VideoService } from '../../../services/video.model';
+import { VideoCardComponent } from './video-card/video-card.component';
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MimeCardComponent, MimeNewComponent, MatIconModule, FormsModule],
+  imports: [CommonModule, MimeCardComponent, MimeNewComponent, MatIconModule, FormsModule, HostCardComponent, VideoCardComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
@@ -25,8 +29,10 @@ export class HomeComponent implements OnInit {
   selectedHost: Host | null = null;
   user$: Observable<User | null>;
   logoutConfirm: boolean = false;
+  selectedVideo: Video | null = null;
 
-  hostNames: Host[] = [];
+  videos: Video[] = [];
+  hosts: Host[] = [];
 
   userId: string = '';
   userName: string = '';
@@ -36,6 +42,7 @@ export class HomeComponent implements OnInit {
     private mimeService: PastMimesService,
     private authService: AuthService,
     private hostService: HostService,
+    private videoService: VideoService,
     private router: Router
   ) {
     this.user$ = this.authService.user$;
@@ -57,14 +64,22 @@ export class HomeComponent implements OnInit {
       }
     })
     this.hostService.getHosts().subscribe(hosts => {
-      this.hostNames = hosts;
-      console.log('Hosts:', this.hostNames);
+      this.hosts = hosts;
+      console.log('Hosts:', this.hosts);
+    });
+
+    this.videoService.getVideos().subscribe(videos => {
+      this.videos = videos;
+      console.log('Videos:', this.videos);
     });
 
   }
 
   onLetsMimeClick() {
-    if (this.selectedHost) {
+    console.log('Selected Host:', this.selectedHost?.hid, this.selectedHost?.description);
+    console.log('Selected Video:', this.selectedVideo?.vid, this.selectedVideo?.title);
+    
+    if (this.selectedHost && this.selectedVideo) {
       const navigationState = { 
         host: this.selectedHost,
         uid: this.userId,
@@ -75,6 +90,7 @@ export class HomeComponent implements OnInit {
       console.log('Navigating with state:', navigationState);
   
       this.router.navigate(['/mime-new'], { state: navigationState });
+    
     } else {
       alert('Please select a host before proceeding.');
     }
@@ -82,6 +98,10 @@ export class HomeComponent implements OnInit {
 
   logSelectedHost() {
     console.log('Selected Host:', this.selectedHost);
+  }
+
+  logSelectedVideo() {
+    console.log('Selected Video:', this.selectedVideo);
   }
 
   onPersonClick() {
@@ -123,5 +143,15 @@ export class HomeComponent implements OnInit {
 
   cancelSignOut() {
     this.logoutConfirm = false; // Hide confirmation dialog
+  }
+
+  selectHost(host: Host): void {
+    this.selectedHost = host;
+    console.log('Selected Host:', this.selectedHost);
+  }
+
+  selectVideo(video: Video): void {
+    this.selectedVideo = video;
+    console.log('Selected Video:', this.selectedVideo);
   }
 }
