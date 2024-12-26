@@ -1,0 +1,21 @@
+<div class="container">
+    <header>
+        <button class="icon-container">
+            <mat-icon (click)="onHomeClick()">home</mat-icon>
+        </button>
+        <button class="icon-container">
+          <mat-icon (click)="onPersonClick()">person_outline</mat-icon>
+      </button>
+    </header>
+    <main>
+        <h1>feedback</h1>
+        <h3>read what users have said about their mimes</h3>
+        
+        <div class="feedback-list">
+            <ng-container *ngFor="let feedback of feedbacks$ | async">
+                <app-feedback-post [feedback]="feedback"></app-feedback-post>
+            </ng-container>
+        </div>
+        
+    </main>
+</div>

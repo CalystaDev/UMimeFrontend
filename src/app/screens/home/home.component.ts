@@ -34,6 +34,10 @@ export class HomeComponent implements OnInit {
   videos: Video[] = [];
   hosts: Host[] = [];
 
+  userId: string = '';
+  userName: string = '';
+  userEmail: string = '';
+
   constructor(
     private mimeService: PastMimesService,
     private authService: AuthService,
@@ -48,10 +52,15 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.user$.subscribe(user => {
       if (user) {
+
+        this.userId = user.uid;
+        this.userName = user.displayName || '';
+        this.userEmail = user.email || '';
+
         this.authService.getUserMimes(user.uid).then(mimes => {
           console.log('Mimes:', mimes);
           this.mimes = mimes;
-        })
+        }) 
       }
     })
     this.hostService.getHosts().subscribe(hosts => {
@@ -69,9 +78,19 @@ export class HomeComponent implements OnInit {
   onLetsMimeClick() {
     console.log('Selected Host:', this.selectedHost?.hid, this.selectedHost?.description);
     console.log('Selected Video:', this.selectedVideo?.vid, this.selectedVideo?.title);
-
+    
     if (this.selectedHost && this.selectedVideo) {
-      this.router.navigate(['/mime-new'], { state: { host: this.selectedHost}});
+      const navigationState = { 
+        host: this.selectedHost,
+        uid: this.userId,
+        userName: this.userName,
+        email: this.userEmail
+      };
+  
+      console.log('Navigating with state:', navigationState);
+  
+      this.router.navigate(['/mime-new'], { state: navigationState });
+    
     } else {
       alert('Please select a host before proceeding.');
     }

@@ -1,0 +1,66 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #FBA33D;
+    height: 100%;
+}
+
+.container {
+    background-color: #FBA33D;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+
+h1 {
+    color: white;
+    font-family: 'Readex Pro Bold';
+    font-size: 2.75rem;
+}
+
+h3 {
+    font-family: 'Readex Pro Normal';
+    font-size: 1.25rem;
+    margin-top: -1%;
+}
+
+main {
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-top: 2%;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 2%;
+    margin-left:2%;
+    margin-right:2%;
+    
+}
+
+.icon-container {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+
+mat-icon {
+    width: 2.2rem;
+    height:2.2rem;
+    font-size: 2.2rem;
+    transition: color 0.5s ease-in-out;
+    color: white;
+}
+
+mat-icon:hover {
+    color:#995A10;
+}
+
+
+  
