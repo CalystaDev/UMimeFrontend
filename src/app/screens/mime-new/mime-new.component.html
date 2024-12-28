@@ -11,13 +11,29 @@
         </button>
     </header>
     <main>
-        <h1>{{this.mime?.title}}</h1>
-        <h3>yours truly, {{this.mime?.hosts?.[0]?.description}}</h3>
-        <video controls>
-            <source src={{this.mime?.videoUrl}} type="video/mp4">
-            <!-- <source src="https://storage.cloud.google.com/background-vids/1732163392.034945/final_video.mp4?authuser=1" type="video/webm"> -->
-            {{this.mime?.status}}
-        </video>
+        <h1>{{this.mime?.title || 'Creating Mime...'}}</h1>
+        <h3>yours truly, {{this.mime?.hosts?.[0]?.description || 'Processing...'}}</h3>
+
+        <div *ngIf="!mime?.videoUrl" class="status-card">
+            <h4>Status: {{mime?.status}}</h4>
+        </div>
+
+        <div *ngIf="mime?.videoUrl; else loadingTemplate">
+            <video controls>
+                <source src={{this.mime?.videoUrl}} type="video/mp4">
+                <!-- <source src="https://storage.cloud.google.com/background-vids/1732163392.034945/final_video.mp4?authuser=1" type="video/webm"> -->
+                Your browser does not support the video tag.
+            </video>
+        </div>
+        
+        <ng-template #loadingTemplate>
+            <!-- Spinner -->
+            <div class="spinner-container">
+                <mat-spinner diameter="50"></mat-spinner>
+                <p>Creating your mime, please wait...</p>
+            </div>
+        </ng-template>
+
         <div class="feedback">
             <input type="text" placeholder="any feedback??" class="rounded-input" [(ngModel)]="feedbackText"/>
             <button class="enter-button" (click)="onClickFeedback()">

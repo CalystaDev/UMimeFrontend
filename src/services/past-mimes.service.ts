@@ -7,6 +7,7 @@ import { environment, apiUrl } from '../app/environment';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Observable, throwError, catchError, map } from 'rxjs';
 import { Video } from './video.model';
+import { docData } from '@angular/fire/firestore';
 
 
 
@@ -45,6 +46,18 @@ export class PastMimesService {
   getHostNames(hosts: Host[]): string {
     return hosts.map(host => host.displayName).join(', ');
   }
+
+  getMimeById(mimeId: string): Observable<Mime | null> {
+    const user = this.authService.getCurrentUser();
+    if (!user) throw new Error('No user logged in');
+  
+    const userDocRef = doc(this.db, `users/${user.uid}`);
+    return docData(userDocRef).pipe(
+      map((userData: any) => userData?.mimes?.find((mime: Mime) => mime.mid === mimeId) || null)
+    );
+  }
+  
+
 
   async addMimeToFirestore(mime: Mime) {
     const user = this.authService.getCurrentUser();

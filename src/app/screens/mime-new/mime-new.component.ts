@@ -10,11 +10,12 @@ import { AuthService } from '../../../services/auth.service';
 import { Subscription } from 'rxjs';
 import { Video } from '../../../services/video.model';
 import { Mime } from '../../../services/mimes.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-mime-new',
   standalone: true,
-  imports: [CommonModule, MatIconModule, FormsModule],
+  imports: [CommonModule, MatIconModule, FormsModule, MatProgressSpinnerModule],
   templateUrl: './mime-new.component.html',
   styleUrl: './mime-new.component.css'
 })
@@ -58,73 +59,85 @@ export class MimeNewComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.mime = {
-      mid: '',
-      createdAt: new Date(),
-      title: '',
-      duration: 0,
-      hosts: [state.host as Host],
-      rating: 0,
-      prompt: state?.prompt || '',
-      script: '',
-      status: 'Processing',
-      videoUrl: ''
+    if (this.mimeId) {
+      // Mime already created
+      this.loadExistingMime(this.mimeId);
+    } else {
+      // Create new mime
+      this.mime = {
+        mid: '',
+        createdAt: new Date(),
+        title: '',
+        duration: 0,
+        hosts: [state.host as Host],
+        rating: 0,
+        prompt: state?.prompt || '',
+        script: '',
+        status: 'Processing',
+        videoUrl: ''
+      }
+  
+      this.username = state.userName;
+      this.userId = state.uid;
+      this.userEmail = state.email;
+      this.selectedVideo = state.video as Video;
+      
+      this.createMime();
     }
+    
+  }
 
-    this.username = state.userName;
-    this.userId = state.uid;
-    this.userEmail = state.email;
-    this.selectedVideo = state.video as Video;
 
+  async createMime() {
     try {
       // Step 1: Create the mime and store in Firestore
-      const mimeId = await this.pastMimesService.addMimeToFirestore(this.mime);
+      const mimeId = await this.pastMimesService.addMimeToFirestore(this.mime!);
 
-      this.mime.mid = mimeId;
+      this.mime!.mid = mimeId;
       this.updateMimeStatus('Creating Mime');
-
-      // Step 2: Call the backend API to generate the mime
-      // Step 2.1: Generate Script with API
-      this.subscriptions?.add
-        ((this.pastMimesService.generateScript(this.mime.prompt, this.mime.hosts[0].apiMappedID)).subscribe({
-          next: (generatedData) => {
-            this.mime!.title = generatedData.title;
-            this.mime!.script = generatedData.script;
-            this.updateMimeStatus('Generated Script');
-  
-            // Step 2.2: Generate Images
-            this.pastMimesService.generateImages(generatedData.video_id).subscribe({
-              next: (imageData) => {
-                // Step 2.3: Generate Audio
-                this.updateMimeStatus('Generated Images');
-  
-                this.pastMimesService.generateAudio(generatedData.video_id).subscribe({
-                  next: (audioData) => {
-                    this.updateMimeStatus('Generated Audio');
-  
-                    this.pastMimesService.generateVideo(generatedData.video_id).subscribe({
-                      next: (videoData) => {
-                        this.updateMimeStatus('Generated Video');
-                        this.mime!.videoUrl = videoData.videoPath;
-                      },
-                      error: (error) => {
-                        console.error('Error generating video:', error);
-                        this.mime!.status = 'Error';
-                      }
-                    })
-                  }
-                })
-              }
-            })
-          },
-          error:(error) => {
-            console.error('Error creating mime from API endpoints:', error);
-          },
-        }));
-    }
-    catch (error) {
+      this.startMimeGeneration();
+    } catch (error) {
       console.error('Error creating mime:', error);
+      this.updateMimeStatus('Failed to create mime');
     }
+  }
+
+  startMimeGeneration() {
+    this.pastMimesService.generateScript(this.mime!.prompt, this.mime!.hosts[0].apiMappedID).subscribe({
+      next: (generatedData) => {
+        this.mime!.title = generatedData.title;
+        this.mime!.script = generatedData.script;
+        this.updateMimeStatus('Generated Script');
+
+        this.pastMimesService.generateImages(generatedData.video_id).subscribe({
+          next: () => {
+            this.updateMimeStatus('Generated Images');
+
+            this.pastMimesService.generateAudio(generatedData.video_id).subscribe({
+              next: () => {
+                this.updateMimeStatus('Generated Audio');
+
+                this.pastMimesService.generateVideo(generatedData.video_id).subscribe({
+                  next: (videoData) => {
+                    this.mime!.status = 'Generated Video';
+                    this.mime!.videoUrl = videoData.videoPath;
+                  },
+                  error: (err) => this.handleError(err, 'Error generating video')
+                });
+              },
+              error: (err) => this.handleError(err, 'Error generating audio')
+            });
+          },
+          error: (err) => this.handleError(err, 'Error generating images')
+        });
+      },
+      error: (err) => this.handleError(err, 'Error generating script')
+    });
+  }
+
+  handleError(error: any, message: string) {
+    console.error(message, error);
+    this.mime!.status = 'Error';
   }
 
   ngOnDestroy() {
@@ -135,6 +148,19 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     this.mime!.status = status;
   }
 
+  loadExistingMime(mid: string) {
+    // Load existing mime
+    this.subscriptions?.add(this.pastMimesService.getMimeById(mid).subscribe({
+      next: (mime) => {
+        this.mime = mime;
+      },
+      error: (error) => {
+        console.error('Error loading mime:', error);
+        this.error = 'Failed to load mime';
+        this.router.navigate(['/']);
+      }
+    }));
+  }
   // private async createMime() {
   //   try {
   //     const user = this.authService.getCurrentUser();
