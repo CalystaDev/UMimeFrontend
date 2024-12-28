@@ -5,7 +5,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { environment, apiUrl } from '../app/environment';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { Observable } from 'rxjs';
+import { Observable, throwError, catchError, map } from 'rxjs';
+import { Video } from './video.model';
 
 
 
@@ -45,31 +46,168 @@ export class PastMimesService {
     return hosts.map(host => host.displayName).join(', ');
   }
 
-  async createMime(prompt: string, hostId: string): Promise<string> {
+  async addMimeToFirestore(mime: Mime) {
     const user = this.authService.getCurrentUser();
     if (!user) {
       throw new Error('No user logged in');
     }
-
-    // Get auth token
-    const token = await user.getIdToken();
-    
-    try {
-      // Call the backend API
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      const response = await this.http.post<{mimeId: string}>(`${this.apiUrl}/create_mime`, {
-        prompt,
-        hostId
-      }, { headers }).toPromise();
-
-      console.log('Mime creation initiated:', response);
-      return response!.mimeId;
-
-    } catch (error) {
-      console.error('Error creating mime:', error);
-      throw error;
+  
+    const userRef = doc(this.db, 'users', user.uid);
+    const userDoc = await getDoc(userRef);
+  
+    if (!userDoc.exists()) {
+      throw new Error('User document not found');
     }
+  
+    const userData = userDoc.data();
+    const mimes = userData['mimes'] || [];
+  
+    // Determine the next incremental ID
+    const nextId = mimes.length > 0
+      ? Math.max(
+          ...mimes.map((m: Mime) => {
+            const parts = m.mid.split('_');
+            return parseInt(parts[1], 10);
+          })
+        ) + 1
+      : 1;
+  
+    // Assign the new mime_id
+    mime.mid = `${user.uid}_${nextId}`;
+  
+    // Add the new mime to the mimes array
+    mimes.push(mime);
+  
+    // Update Firestore
+    await updateDoc(userRef, { mimes });
+  
+    console.log('Mime added successfully:', mime);
+    // return mimeID
+    return mime.mid;
   }
+  
+  generateScript(prompt: string, host_mapped_id: string): Observable<{ video_id: string; title: string; script: string; }> {
+    const payload = {
+      "prompt": prompt,
+      "voice_id": host_mapped_id
+    };
+
+    const endpoint = `${this.apiUrl}/generate_script`;
+
+    return this.http.post<{ video_id: string; title: string; script: string }>(endpoint, payload).pipe(
+      map(response => {
+        console.log('API Response:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error making POST request:', error);
+        return throwError(() => new Error('Failed to generate script'));
+      })
+    );
+  }
+
+  generateImages(video_id: string): Observable<{ message: string; imagePaths: string[] }> {
+    const endpoint = `${this.apiUrl}/generate_images/${video_id}`;
+  
+    return this.http.post<{ message: string; imagePaths: string[] }>(endpoint, {}).pipe(
+      map(response => {
+        console.log('API Response:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error making POST request:', error);
+        return throwError(() => new Error('Failed to generate images'));
+      })
+    );
+  }
+
+  generateAudio(video_id: string): Observable<{ message: string; audioPath: string }> {
+    const endpoint = `${this.apiUrl}/generate_audio/${video_id}`;
+  
+    return this.http.post<{ message: string; audioPath: string }>(endpoint, {}).pipe(
+      map(response => {
+        console.log('API Response:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error making POST request:', error);
+        return throwError(() => new Error('Failed to generate audio'));
+      })
+    );
+  }
+
+  generateVideo(video_id: string): Observable<{ message: string; videoPath: string }> {
+    const endpoint = `${this.apiUrl}/generate_video/${video_id}`;
+  
+    return this.http.post<{ message: string; videoPath: string }>(endpoint, {}).pipe(
+      map(response => {
+        console.log('API Response:', response);
+        return response;
+      }),
+      catchError(error => {
+        console.error('Error making POST request:', error);
+        return throwError(() => new Error('Failed to generate video'));
+      })
+    );
+  }
+  
+
+
+
+  // async createMime(prompt: string, host: Host, background_video: Video): Promise<string> {
+  //   const user = this.authService.getCurrentUser();
+  //   if (!user) {
+  //     throw new Error('No user logged in');
+  //   }
+
+  //   // Get auth token
+  //   const token = await user.getIdToken();
+
+  //   const newMime : Mime = {
+  //     mid: '', // will generate from Firestore
+  //     createdAt: new Date(),
+  //     title: '', // will generate from API
+  //     duration: 0, // placeholder until video generates
+  //     hosts: [host],
+  //     rating: 0,
+  //     prompt: prompt,
+  //     script: '', // will generate from API
+  //     status: 'generating...',
+  //     videoUrl: '', // will generate from API
+  //   };
+
+  //   // Add the new mime to the user's mimes
+  //   const userRef = doc(this.db, 'users', user.uid);
+  //   const userDoc = await getDoc(userRef);
+  //   if (!userDoc.exists()) {
+  //     throw new Error('User document not found');
+  //   }
+
+  //   const userData = userDoc.data();
+  //   const mimes = userData['mimes'] || [];
+  //   mimes.push(newMime);
+
+  //   await updateDoc(userRef, { mimes });
+
+  //   // Create the mime using API
+    
+  //   try {
+  //     // Call the backend API
+  //     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  //     const response = await this.http.post<{mimeId: string}>(`${this.apiUrl}/create_mime`, {
+  //       prompt,
+  //       hostId
+  //     }, { headers }).toPromise();
+
+  //     console.log('Mime creation initiated:', response);
+  //     return response!.mimeId;
+
+  //   } catch (error) {
+  //     console.error('Error creating mime:', error);
+  //     throw error;
+  //   }
+  // }
+
   pollMimeStatus(userId: string, mimeId: string): Observable<string> {
     return new Observable(subscriber => {
       const checkStatus = async () => {
