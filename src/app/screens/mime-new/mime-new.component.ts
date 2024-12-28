@@ -8,19 +8,22 @@ import { FormsModule } from '@angular/forms';
 import { PastMimesService } from '../../../services/past-mimes.service';
 import { AuthService } from '../../../services/auth.service';
 import { Subscription } from 'rxjs';
+import { Video } from '../../../services/video.model';
+import { Mime } from '../../../services/mimes.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-mime-new',
   standalone: true,
-  imports: [CommonModule, MatIconModule, FormsModule],
+  imports: [CommonModule, MatIconModule, FormsModule, MatProgressSpinnerModule],
   templateUrl: './mime-new.component.html',
   styleUrl: './mime-new.component.css'
 })
 export class MimeNewComponent implements OnInit, OnDestroy {
-  selectedHost: Host | null = null;
   username: string = '';
   userId: string = '';
   userEmail: string = '';
+  selectedVideo: Video | null = null;
 
   sub = null;
 
@@ -29,11 +32,12 @@ export class MimeNewComponent implements OnInit, OnDestroy {
 
   feedbackText: string = ''; // Bind this to the input field
 
-  prompt: string = '';
-  status: string = 'Processing';
   error: string | null = null;
   mimeId: string | null = null;
-  private statusSubscription: Subscription | null = null;
+
+  mime: Mime | null = null;
+
+  private subscriptions: Subscription | null = new Subscription();
 
   constructor(
     private router: Router,
@@ -43,66 +47,157 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     private feedbackService: FeedbackService
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     console.log("Extras State", this.router.getCurrentNavigation()?.extras.state);
     console.log("History State", history.state);
-    const state = this.router.getCurrentNavigation()?.extras.state || history.state;
-    if (state) {
-      console.log('State:', state);
-      this.selectedHost = state.host as Host;
 
+    const state = this.router.getCurrentNavigation()?.extras.state || history.state;
+
+    if (!state || !state.host || !state.prompt) {
+      alert('Missing required data. Redirecting to home.');
+      this.router.navigate(['/']);
+      return;
+    }
+
+    if (this.mimeId) {
+      // Mime already created
+      this.loadExistingMime(this.mimeId);
+    } else {
+      // Create new mime
+      this.mime = {
+        mid: '',
+        createdAt: new Date(),
+        title: '',
+        duration: 0,
+        hosts: [state.host as Host],
+        rating: 0,
+        prompt: state?.prompt || '',
+        script: '',
+        status: 'Processing',
+        videoUrl: ''
+      }
+  
       this.username = state.userName;
       this.userId = state.uid;
       this.userEmail = state.email;
-
-      this.prompt = state.prompt;
-      console.log('Selected Host in Mime New:', this.selectedHost?.hid, this.selectedHost?.description);
+      this.selectedVideo = state.video as Video;
       
-      if (this.selectedHost && this.prompt) {
-        this.createMime();
-      }
+      this.createMime();
     }
-  }
-  ngOnDestroy() {
-    if (this.statusSubscription) {
-      this.statusSubscription.unsubscribe();
-    }
+    
   }
 
-  private async createMime() {
+
+  async createMime() {
     try {
-      const user = this.authService.getCurrentUser();
-      if (!user) throw new Error('No user logged in');
-      
-      this.mimeId = await this.pastMimesService.createMime(this.prompt, this.selectedHost!.hid);
-      
-      // Start polling for status
-      this.statusSubscription = this.pastMimesService.pollMimeStatus(user.uid, this.mimeId)
-        .subscribe({
-          next: (status) => {
-            this.status = status;
-            if (status === 'Complete') {
-              // Handle completion (maybe show the video)
-              console.log('Mime generation completed');
-            } else if (status === 'Error') {
-              this.error = 'Failed to generate mime. Please try again.';
-            }
-          },
-          error: (error) => {
-            console.error('Error polling mime status:', error);
-            this.error = 'Error checking mime status';
-          }
-        });
+      // Step 1: Create the mime and store in Firestore
+      const mimeId = await this.pastMimesService.addMimeToFirestore(this.mime!);
+
+      this.mime!.mid = mimeId;
+      this.updateMimeStatus('Creating Mime');
+      this.startMimeGeneration();
     } catch (error) {
       console.error('Error creating mime:', error);
-      this.error = 'Failed to create mime. Please try again.';
+      this.updateMimeStatus('Failed to create mime');
     }
   }
+
+  startMimeGeneration() {
+    this.pastMimesService.generateScript(this.mime!.prompt, this.mime!.hosts[0].apiMappedID).subscribe({
+      next: (generatedData) => {
+        this.mime!.title = generatedData.title;
+        this.mime!.script = generatedData.script;
+        this.updateMimeStatus('Generated Script');
+
+        this.pastMimesService.generateImages(generatedData.video_id).subscribe({
+          next: () => {
+            this.updateMimeStatus('Generated Images');
+
+            this.pastMimesService.generateAudio(generatedData.video_id).subscribe({
+              next: () => {
+                this.updateMimeStatus('Generated Audio');
+
+                this.pastMimesService.generateVideo(generatedData.video_id).subscribe({
+                  next: (videoData) => {
+                    this.mime!.status = 'Generated Video';
+                    this.mime!.videoUrl = videoData.videoPath;
+                  },
+                  error: (err) => this.handleError(err, 'Error generating video')
+                });
+              },
+              error: (err) => this.handleError(err, 'Error generating audio')
+            });
+          },
+          error: (err) => this.handleError(err, 'Error generating images')
+        });
+      },
+      error: (err) => this.handleError(err, 'Error generating script')
+    });
+  }
+
+  handleError(error: any, message: string) {
+    console.error(message, error);
+    this.mime!.status = 'Error';
+  }
+
+  ngOnDestroy() {
+    this.subscriptions?.unsubscribe();
+  }
+
+  updateMimeStatus(status: string) {
+    this.mime!.status = status;
+  }
+
+  loadExistingMime(mid: string) {
+    // Load existing mime
+    this.subscriptions?.add(this.pastMimesService.getMimeById(mid).subscribe({
+      next: (mime) => {
+        this.mime = mime;
+      },
+      error: (error) => {
+        console.error('Error loading mime:', error);
+        this.error = 'Failed to load mime';
+        this.router.navigate(['/']);
+      }
+    }));
+  }
+  // private async createMime() {
+  //   try {
+  //     const user = this.authService.getCurrentUser();
+  //     if (!user) throw new Error('No user logged in');
+      
+  //     this.mimeId = await this.pastMimesService.createMime(this.prompt, this.selectedHost!.hid);
+      
+  //     // Start polling for status
+  //     this.statusSubscription = this.pastMimesService.pollMimeStatus(user.uid, this.mimeId)
+  //       .subscribe({
+  //         next: (status) => {
+  //           this.status = status;
+  //           if (status === 'Complete') {
+  //             // Handle completion (maybe show the video)
+  //             console.log('Mime generation completed');
+  //           } else if (status === 'Error') {
+  //             this.error = 'Failed to generate mime. Please try again.';
+  //           }
+  //         },
+  //         error: (error) => {
+  //           console.error('Error polling mime status:', error);
+  //           this.error = 'Error checking mime status';
+  //         }
+  //       });
+  //   } catch (error) {
+  //     console.error('Error creating mime:', error);
+  //     this.error = 'Failed to create mime. Please try again.';
+  //   }
+  // }
 
   onLike() {
     this.liked = !this.liked;
     if (this.liked) {
       this.disliked = false;
+    }
+    if (this.mime) {
+      this.mime.rating = this.liked ? 1 : 0;
     }
   }
 
@@ -110,6 +205,9 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     this.disliked = !this.disliked;
     if (this.disliked) {
       this.liked = false;
+    }
+    if (this.mime) {
+      this.mime.rating = this.disliked ? -1 : 0;
     }
   }
 
@@ -135,9 +233,9 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     await this.feedbackService.writeFeedback(
       this.userId,
       this.username,
-      this.selectedHost?.hid || '',
+      this.mime?.mid || '',
       this.feedbackText,
-      this.liked ? 1 : this.disliked ? -1 : 0,
+      this.mime?.rating || 0,
       this.userEmail
     );
   

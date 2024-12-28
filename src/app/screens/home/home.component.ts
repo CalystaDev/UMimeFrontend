@@ -84,7 +84,9 @@ export class HomeComponent implements OnInit {
         host: this.selectedHost,
         uid: this.userId,
         userName: this.userName,
-        email: this.userEmail
+        email: this.userEmail,
+        video: this.selectedVideo,
+        prompt: this.mimePrompt
       };
   
       console.log('Navigating with state:', navigationState);
