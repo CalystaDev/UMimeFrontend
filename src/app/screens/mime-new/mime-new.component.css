@@ -42,6 +42,14 @@ h3 {
     font-size: 1.5rem;
     font-weight: lighter;
     letter-spacing: 0.2cap;
+    margin-bottom: 1%;
+}
+
+.status-card h4 {
+    font-family: 'Inter Regular';
+    font-weight: 400;
+    font-size: 1rem;
+    color: #995A10;
 }
 
 video {
