@@ -17,6 +17,7 @@ import { Host } from '../../services/hosts.model';
 export class MimeCardComponent {
   @Input() title!: string;
   @Input() host!: Host;
+  @Input() mid!: string;
 
   constructor(
     private mimeService: PastMimesService, 
@@ -28,16 +29,27 @@ export class MimeCardComponent {
     this.authService.user$.pipe(take(1)).subscribe(user => {
       if (user) {
         console.log('User is signed in, navigating to mime-new');
-        this.router.navigate(['/mime-new'], { state: { host: this.host }});
+        
+        this.navigateToMimeNew();
+        // this.router.navigate(['/mime-new'], { state: { host: this.host }});
       } else {
         console.log('User is not signed in, initiating sign-in process');
         this.authService.googleSignIn().then(() => {
           console.log('Sign-in successful, navigating to mime-new');
-          this.router.navigate(['/mime-new'], { state: { host: this.host }});
+          this.navigateToMimeNew();
         }).catch(error => {
           console.error('Sign-in failed', error);
         });
       }
     });
+  }
+
+  navigateToMimeNew(): void {
+    if (this.mid) {
+      console.log(`Navigating to existing mime with mid: ${this.mid}`);
+      this.router.navigate(['/mime-new', this.mid]); 
+    } else {
+      console.error('No mime id provided');
+    }
   }
 }

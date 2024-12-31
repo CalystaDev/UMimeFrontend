@@ -66,6 +66,7 @@ export class MimeNewComponent implements OnInit, OnDestroy {
       this.subscriptions = this.activatedRoute.params.subscribe(params => {
         const mid = params['mid'];
         if (mid) {
+          console.log('Loading existing mime:', mid);
           this.loadExistingMime(mid);
         }
       });

@@ -12,7 +12,11 @@ export const routes: Routes = [
   {
     path: 'mime-new',
     component: MimeNewComponent,
-  }, 
+  },
+  {
+    path: 'mime-new/:mid',
+    component: MimeNewComponent,
+  },
   {
     path: 'host-directory',
     component: HostDirectoryComponent,
