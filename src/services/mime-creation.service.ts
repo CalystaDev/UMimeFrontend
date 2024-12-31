@@ -44,4 +44,8 @@ export class MimeCreationService {
       backgroundVideo: null
     });
   }
+
+  getMimeState() {
+    return this.mimeStateSubject.value;
+  }  
 }

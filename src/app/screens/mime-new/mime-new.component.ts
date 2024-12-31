@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { Video } from '../../../services/video.model';
 import { Mime } from '../../../services/mimes.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MimeCreationService } from '../../../services/mime-creation.service';
 
 @Component({
   selector: 'app-mime-new',
@@ -44,47 +45,32 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private pastMimesService: PastMimesService,
     private authService: AuthService,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private mimeCreationService: MimeCreationService
   ) { }
 
   async ngOnInit() {
-    console.log("Extras State", this.router.getCurrentNavigation()?.extras.state);
-    console.log("History State", history.state);
 
-    const state = this.router.getCurrentNavigation()?.extras.state || history.state;
+    const mimeState = this.mimeCreationService.getMimeState();
+    console.log('Mime state:', mimeState);
 
-    if (!state || !state.host || !state.prompt) {
-      alert('Missing required data. Redirecting to home.');
-      this.router.navigate(['/']);
-      return;
-    }
+    if (mimeState && mimeState.mime) {
+      this.mime = mimeState.mime;
+      this.selectedVideo = mimeState.backgroundVideo as Video;
+      this.username = mimeState.user?.displayName || '';
+      this.userId = mimeState.user?.uid || '';
+      this.userEmail = mimeState.user?.email || '';
 
-    if (this.mimeId) {
-      // Mime already created
-      this.loadExistingMime(this.mimeId);
-    } else {
-      // Create new mime
-      this.mime = {
-        mid: '',
-        createdAt: new Date(),
-        title: '',
-        duration: 0,
-        hosts: [state.host as Host],
-        rating: 0,
-        prompt: state?.prompt || '',
-        script: '',
-        status: 'Processing',
-        videoUrl: ''
-      }
-  
-      this.username = state.userName;
-      this.userId = state.uid;
-      this.userEmail = state.email;
-      this.selectedVideo = state.video as Video;
-      
       this.createMime();
+    } else {
+      this.subscriptions = this.activatedRoute.params.subscribe(params => {
+        const mid = params['mid'];
+        if (mid) {
+          this.loadExistingMime(mid);
+        }
+      });
     }
-    
+
   }
 
 

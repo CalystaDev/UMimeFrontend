@@ -109,6 +109,12 @@ h1 {
     cursor: pointer;
 }
 
+@media screen and (max-width: 950px) {
+    .search-button {
+        margin-left: -10%;
+    }
+}
+
 .search-icon {
     width: 1.5rem;
     height: 1.5rem;
