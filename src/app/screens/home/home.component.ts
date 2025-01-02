@@ -9,11 +9,14 @@ import { Mime } from '../../../services/mimes.model';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { User } from 'firebase/auth';
+import { User as FirebaseUser } from 'firebase/auth';  // Alias for Firebase User
+import { User } from '../../../services/user.model';
 import { Host, HostService } from '../../../services/hosts.model';
 import { HostCardComponent } from "../host-directory/host-card/host-card.component";
 import { Video, VideoService } from '../../../services/video.model';
 import { VideoCardComponent } from './video-card/video-card.component';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { MimeCreationService } from '../../../services/mime-creation.service';
 
 
 @Component({
@@ -27,7 +30,7 @@ export class HomeComponent implements OnInit {
   mimes: Mime[] = [];
   mimePrompt: string = ''
   selectedHost: Host | null = null;
-  user$: Observable<User | null>;
+  user$: Observable<FirebaseUser | null>;
   logoutConfirm: boolean = false;
   selectedVideo: Video | null = null;
 
@@ -43,7 +46,9 @@ export class HomeComponent implements OnInit {
     private authService: AuthService,
     private hostService: HostService,
     private videoService: VideoService,
-    private router: Router
+    private router: Router,
+    private mimeCreationService: MimeCreationService,
+    private firestore: Firestore
   ) {
     this.user$ = this.authService.user$;
   }
@@ -75,26 +80,50 @@ export class HomeComponent implements OnInit {
 
   }
 
-  onLetsMimeClick() {
+  async onLetsMimeClick() {
     console.log('Selected Host:', this.selectedHost?.hid, this.selectedHost?.description);
     console.log('Selected Video:', this.selectedVideo?.vid, this.selectedVideo?.title);
-    
     if (this.selectedHost && this.selectedVideo) {
-      const navigationState = { 
-        host: this.selectedHost,
-        uid: this.userId,
-        userName: this.userName,
-        email: this.userEmail,
-        video: this.selectedVideo,
-        prompt: this.mimePrompt
+      const firebaseUser = this.authService.getCurrentUser();
+      if (!firebaseUser) return;
+  
+      const userRef = doc(this.firestore, 'users', firebaseUser.uid);
+      const userSnap = await getDoc(userRef);
+      
+      if (!userSnap.exists()) return;
+  
+      const userData = userSnap.data();
+      const user: User = {  // Now using your custom User interface
+        uid: firebaseUser.uid,
+        createdAt: userData['createdAt'].toDate(),
+        displayName: firebaseUser.displayName || '',
+        email: firebaseUser.email || '',
+        lastSignedIn: new Date(),
+        profilePictureURL: firebaseUser.photoURL || '',
+        mimes: userData['mimes'] || []
       };
   
-      console.log('Navigating with state:', navigationState);
+      const initialMime: Mime = {
+        mid: '',
+        createdAt: new Date(),
+        title: '',
+        duration: 0,
+        hosts: [this.selectedHost],
+        rating: 0,
+        prompt: this.mimePrompt,
+        script: '',
+        status: 'Processing'
+      };
   
-      this.router.navigate(['/mime-new'], { state: navigationState });
-    
-    } else {
-      alert('Please select a host before proceeding.');
+      this.mimeCreationService.setMimeState({
+        user,
+        mime: initialMime,
+        prompt: this.mimePrompt,
+        host: this.selectedHost,
+        backgroundVideo: this.selectedVideo
+      });
+  
+      this.router.navigate(['/mime-new']);
     }
   }
 

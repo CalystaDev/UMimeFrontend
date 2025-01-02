@@ -11,6 +11,9 @@ import { Subscription } from 'rxjs';
 import { Video } from '../../../services/video.model';
 import { Mime } from '../../../services/mimes.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MimeCreationService } from '../../../services/mime-creation.service';
+import { doc, updateDoc, increment } from 'firebase/firestore';
+import { Firestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-mime-new',
@@ -44,47 +47,35 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private pastMimesService: PastMimesService,
     private authService: AuthService,
-    private feedbackService: FeedbackService
+    private feedbackService: FeedbackService,
+    private mimeCreationService: MimeCreationService,
+    private firestore: Firestore
+
   ) { }
 
   async ngOnInit() {
-    console.log("Extras State", this.router.getCurrentNavigation()?.extras.state);
-    console.log("History State", history.state);
 
-    const state = this.router.getCurrentNavigation()?.extras.state || history.state;
+    const mimeState = this.mimeCreationService.getMimeState();
+    console.log('Mime state:', mimeState);
 
-    if (!state || !state.host || !state.prompt) {
-      alert('Missing required data. Redirecting to home.');
-      this.router.navigate(['/']);
-      return;
-    }
+    if (mimeState && mimeState.mime) {
+      this.mime = mimeState.mime;
+      this.selectedVideo = mimeState.backgroundVideo as Video;
+      this.username = mimeState.user?.displayName || '';
+      this.userId = mimeState.user?.uid || '';
+      this.userEmail = mimeState.user?.email || '';
 
-    if (this.mimeId) {
-      // Mime already created
-      this.loadExistingMime(this.mimeId);
-    } else {
-      // Create new mime
-      this.mime = {
-        mid: '',
-        createdAt: new Date(),
-        title: '',
-        duration: 0,
-        hosts: [state.host as Host],
-        rating: 0,
-        prompt: state?.prompt || '',
-        script: '',
-        status: 'Processing',
-        videoUrl: ''
-      }
-  
-      this.username = state.userName;
-      this.userId = state.uid;
-      this.userEmail = state.email;
-      this.selectedVideo = state.video as Video;
-      
       this.createMime();
+    } else {
+      this.subscriptions = this.activatedRoute.params.subscribe(params => {
+        const mid = params['mid'];
+        if (mid) {
+          console.log('Loading existing mime:', mid);
+          this.loadExistingMime(mid);
+        }
+      });
     }
-    
+
   }
 
 
@@ -102,9 +93,28 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     }
   }
 
-  startMimeGeneration() {
+  async startMimeGeneration() {
+    const hostId = this.mime!.hosts[0].hid;
+    console.log("\n\n\nSTARTED MIME GEN\n\n\n")
+    try {
+      // Increment host uses
+      const hostRef = doc(this.firestore, `hosts/${hostId}`);
+      const videoDocId = this.selectedVideo!.vid;  // Using vid which contains the Firestore doc ID
+
+      await updateDoc(hostRef, {
+        uses: increment(1),
+      });
+      console.log("Hosts incremented!");
+      const videoRef = doc(this.firestore, `background_vids/${videoDocId}`);
+      await updateDoc(videoRef, {
+        uses: increment(1),
+      });
+    } catch (error) {
+      console.error('Error incrementing host uses:', error);
+    }
     this.pastMimesService.generateScript(this.mime!.prompt, this.mime!.hosts[0].apiMappedID).subscribe({
-      next: (generatedData) => {
+      next: async (generatedData) => {
+
         this.mime!.title = generatedData.title;
         this.mime!.script = generatedData.script;
         this.updateMimeStatus('Generated Script');
@@ -165,9 +175,9 @@ export class MimeNewComponent implements OnInit, OnDestroy {
   //   try {
   //     const user = this.authService.getCurrentUser();
   //     if (!user) throw new Error('No user logged in');
-      
+
   //     this.mimeId = await this.pastMimesService.createMime(this.prompt, this.selectedHost!.hid);
-      
+
   //     // Start polling for status
   //     this.statusSubscription = this.pastMimesService.pollMimeStatus(user.uid, this.mimeId)
   //       .subscribe({
@@ -220,7 +230,7 @@ export class MimeNewComponent implements OnInit, OnDestroy {
       alert('Please enter feedback before submitting.');
       return;
     }
-  
+
     if (!this.userId || !this.userEmail || !this.username) {
       console.error('Missing required user data:', {
         userId: this.userId,
@@ -229,7 +239,7 @@ export class MimeNewComponent implements OnInit, OnDestroy {
       });
       return;
     }
-  
+
     await this.feedbackService.writeFeedback(
       this.userId,
       this.username,
@@ -238,8 +248,8 @@ export class MimeNewComponent implements OnInit, OnDestroy {
       this.mime?.rating || 0,
       this.userEmail
     );
-  
+
     this.feedbackText = ''; // Clear input field
   }
-  
+
 }
