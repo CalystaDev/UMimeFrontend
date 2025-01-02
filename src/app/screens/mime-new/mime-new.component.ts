@@ -99,16 +99,22 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     try {
       // Increment host uses
       const hostRef = doc(this.firestore, `hosts/${hostId}`);
+      const videoDocId = this.selectedVideo!.vid;  // Using vid which contains the Firestore doc ID
+
       await updateDoc(hostRef, {
         uses: increment(1),
       });
       console.log("Hosts incremented!");
+      const videoRef = doc(this.firestore, `background_vids/${videoDocId}`);
+      await updateDoc(videoRef, {
+        uses: increment(1),
+      });
     } catch (error) {
       console.error('Error incrementing host uses:', error);
     }
     this.pastMimesService.generateScript(this.mime!.prompt, this.mime!.hosts[0].apiMappedID).subscribe({
       next: async (generatedData) => {
-        
+
         this.mime!.title = generatedData.title;
         this.mime!.script = generatedData.script;
         this.updateMimeStatus('Generated Script');
@@ -169,9 +175,9 @@ export class MimeNewComponent implements OnInit, OnDestroy {
   //   try {
   //     const user = this.authService.getCurrentUser();
   //     if (!user) throw new Error('No user logged in');
-      
+
   //     this.mimeId = await this.pastMimesService.createMime(this.prompt, this.selectedHost!.hid);
-      
+
   //     // Start polling for status
   //     this.statusSubscription = this.pastMimesService.pollMimeStatus(user.uid, this.mimeId)
   //       .subscribe({
@@ -224,7 +230,7 @@ export class MimeNewComponent implements OnInit, OnDestroy {
       alert('Please enter feedback before submitting.');
       return;
     }
-  
+
     if (!this.userId || !this.userEmail || !this.username) {
       console.error('Missing required user data:', {
         userId: this.userId,
@@ -233,7 +239,7 @@ export class MimeNewComponent implements OnInit, OnDestroy {
       });
       return;
     }
-  
+
     await this.feedbackService.writeFeedback(
       this.userId,
       this.username,
@@ -242,8 +248,8 @@ export class MimeNewComponent implements OnInit, OnDestroy {
       this.mime?.rating || 0,
       this.userEmail
     );
-  
+
     this.feedbackText = ''; // Clear input field
   }
-  
+
 }
