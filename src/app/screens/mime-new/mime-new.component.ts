@@ -12,6 +12,8 @@ import { Video } from '../../../services/video.model';
 import { Mime } from '../../../services/mimes.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MimeCreationService } from '../../../services/mime-creation.service';
+import { doc, updateDoc, increment } from 'firebase/firestore';
+import { Firestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-mime-new',
@@ -46,7 +48,9 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     private pastMimesService: PastMimesService,
     private authService: AuthService,
     private feedbackService: FeedbackService,
-    private mimeCreationService: MimeCreationService
+    private mimeCreationService: MimeCreationService,
+    private firestore: Firestore
+
   ) { }
 
   async ngOnInit() {
@@ -89,9 +93,22 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     }
   }
 
-  startMimeGeneration() {
+  async startMimeGeneration() {
+    const hostId = this.mime!.hosts[0].hid;
+    console.log("\n\n\nSTARTED MIME GEN\n\n\n")
+    try {
+      // Increment host uses
+      const hostRef = doc(this.firestore, `hosts/${hostId}`);
+      await updateDoc(hostRef, {
+        uses: increment(1),
+      });
+      console.log("Hosts incremented!");
+    } catch (error) {
+      console.error('Error incrementing host uses:', error);
+    }
     this.pastMimesService.generateScript(this.mime!.prompt, this.mime!.hosts[0].apiMappedID).subscribe({
-      next: (generatedData) => {
+      next: async (generatedData) => {
+        
         this.mime!.title = generatedData.title;
         this.mime!.script = generatedData.script;
         this.updateMimeStatus('Generated Script');
