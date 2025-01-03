@@ -14,6 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MimeCreationService } from '../../../services/mime-creation.service';
 import { doc, updateDoc, increment } from 'firebase/firestore';
 import { Firestore } from '@angular/fire/firestore';
+import { Audio } from '../../../services/audio.model';
 
 @Component({
   selector: 'app-mime-new',
@@ -27,6 +28,7 @@ export class MimeNewComponent implements OnInit, OnDestroy {
   userId: string = '';
   userEmail: string = '';
   selectedVideo: Video | null = null;
+  selectedAudio: Audio | null = null;
 
   sub = null;
 
@@ -61,6 +63,7 @@ export class MimeNewComponent implements OnInit, OnDestroy {
     if (mimeState && mimeState.mime) {
       this.mime = mimeState.mime;
       this.selectedVideo = mimeState.backgroundVideo as Video;
+      this.selectedAudio = mimeState.backgroundAudio as Audio;
       this.username = mimeState.user?.displayName || '';
       this.userId = mimeState.user?.uid || '';
       this.userEmail = mimeState.user?.email || '';

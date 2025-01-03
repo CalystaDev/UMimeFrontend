@@ -17,6 +17,7 @@ import { Video, VideoService } from '../../../services/video.model';
 import { VideoCardComponent } from './video-card/video-card.component';
 import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 import { MimeCreationService } from '../../../services/mime-creation.service';
+import { Audio, AudioService } from '../../../services/audio.model';
 
 
 @Component({
@@ -33,9 +34,11 @@ export class HomeComponent implements OnInit {
   user$: Observable<FirebaseUser | null>;
   logoutConfirm: boolean = false;
   selectedVideo: Video | null = null;
+  selectedAudio: Audio | null = null;
 
   videos: Video[] = [];
   hosts: Host[] = [];
+  audios: Audio[] = [];
 
   userId: string = '';
   userName: string = '';
@@ -46,6 +49,7 @@ export class HomeComponent implements OnInit {
     private authService: AuthService,
     private hostService: HostService,
     private videoService: VideoService,
+    private audioService: AudioService,
     private router: Router,
     private mimeCreationService: MimeCreationService,
     private firestore: Firestore
@@ -78,12 +82,18 @@ export class HomeComponent implements OnInit {
       console.log('Videos:', this.videos);
     });
 
+    this.audioService.getAudios().subscribe(audios => {
+      this.audios = audios;
+      console.log('Audios:', this.audios);
+    });
+
   }
 
   async onLetsMimeClick() {
     console.log('Selected Host:', this.selectedHost?.hid, this.selectedHost?.description);
     console.log('Selected Video:', this.selectedVideo?.vid, this.selectedVideo?.title);
-    if (this.selectedHost && this.selectedVideo) {
+    console.log('Selected Audio:', this.selectedAudio?.aid, this.selectedAudio?.title);
+    if (this.selectedHost && this.selectedVideo && this.selectedAudio) {
       const firebaseUser = this.authService.getCurrentUser();
       if (!firebaseUser) return;
   
@@ -120,7 +130,8 @@ export class HomeComponent implements OnInit {
         mime: initialMime,
         prompt: this.mimePrompt,
         host: this.selectedHost,
-        backgroundVideo: this.selectedVideo
+        backgroundVideo: this.selectedVideo,
+        backgroundAudio: this.selectedAudio
       });
   
       this.router.navigate(['/mime-new']);
@@ -133,6 +144,10 @@ export class HomeComponent implements OnInit {
 
   logSelectedVideo() {
     console.log('Selected Video:', this.selectedVideo);
+  }
+
+  logSelectedAudio() {
+    console.log('Selected Audio:', this.selectedAudio);
   }
 
   onPersonClick() {

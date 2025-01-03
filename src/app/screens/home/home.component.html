@@ -92,6 +92,22 @@
             <option [ngValue]="null" disabled selected>select your background video</option>
             <option *ngFor="let video of videos" [ngValue]="video">{{ video.title }}</option>
           </select>
+        </div>
+      </div>
+
+      <div class="audio-select" *ngIf="mimePrompt && selectedHost && selectedVideo">
+        <div class="subtitle-with-logo">
+          <mat-icon id="icon">headphones</mat-icon>
+          <h2> choose your background music (optional)</h2>
+        </div>
+        <p id="info"> Select a background music from the dropdown. </p>
+        <!-- dropdown for audio names -->
+        <div class="input-container-host">
+          <select id="input-video" [(ngModel)]="selectedAudio" (change)="logSelectedAudio()">
+            <option [ngValue]="null" disabled selected>select your background music</option>
+            <option [ngValue]="null" selected>No Music</option>
+            <option *ngFor="let audio of audios" [ngValue]="audio">{{ audio.title }}</option>
+          </select>
           <button (click)="onLetsMimeClick()"> let's mime </button>
         </div>
       </div>

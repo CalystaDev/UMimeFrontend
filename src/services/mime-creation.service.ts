@@ -4,6 +4,7 @@ import { Video } from './video.model';
 import { Mime } from './mimes.model';
 import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { Audio } from './audio.model';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +15,15 @@ export class MimeCreationService {
     mime: Mime | null,
     prompt: string,
     host: Host | null,
-    backgroundVideo: Video | null
+    backgroundVideo: Video | null,
+    backgroundAudio: Audio | null
   }>({
     user: null,
     mime: null,
     prompt: '',
     host: null,
-    backgroundVideo: null
+    backgroundVideo: null,
+    backgroundAudio: null
   });
 
   mimeState$ = this.mimeStateSubject.asObservable();
@@ -30,7 +33,8 @@ export class MimeCreationService {
     mime: Mime | null,
     prompt: string,
     host: Host,
-    backgroundVideo: Video
+    backgroundVideo: Video,
+    backgroundAudio: Audio
   }) {
     this.mimeStateSubject.next(state);
   }
@@ -41,7 +45,8 @@ export class MimeCreationService {
       mime: null,
       prompt: '',
       host: null,
-      backgroundVideo: null
+      backgroundVideo: null,
+      backgroundAudio: null
     });
   }
 

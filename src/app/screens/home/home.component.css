@@ -268,6 +268,13 @@ h2 {
 
 }
 
+#icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 2.5rem;
+    color: black;
+}
+
 .input-container-host {
     align-items: center;
     display: flex;
