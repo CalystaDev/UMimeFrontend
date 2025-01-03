@@ -3,6 +3,7 @@ import { HomeComponent } from './screens/home/home.component';
 import { MimeNewComponent } from './screens/mime-new/mime-new.component';
 import { HostDirectoryComponent } from './screens/host-directory/host-directory.component';
 import { FeedbackPageComponent } from './screens/feedback-page/feedback-page.component';
+import { FeedbackAuthGuard } from '../guards/feedbackauth.guard';
 
 export const routes: Routes = [
   {
@@ -20,5 +21,6 @@ export const routes: Routes = [
   {
     path: 'feedback',
     component: FeedbackPageComponent,
+    canActivate: [FeedbackAuthGuard]
   }
 ];
